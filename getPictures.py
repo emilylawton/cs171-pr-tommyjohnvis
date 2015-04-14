@@ -10,7 +10,7 @@ for x in data:
   # make sure player has valid mlbamid
   if (x["mlbamid"] != ""):
     url = "http://mlb.mlb.com/images/players/525x330/" + x["mlbamid"] + ".jpg"
-    f = "images/players/" + x["mlbamid"] + ".jpg"
+    f = "img/players/" + x["mlbamid"] + ".jpg"
     a = urllib.urlopen(url)
     # make sure url exists
     if a.getcode() != 404:
