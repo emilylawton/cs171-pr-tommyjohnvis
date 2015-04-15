@@ -64,6 +64,9 @@
           var playerVis = new PlayerVis(d3.select("#playerVis"), allData);
 
           // bind event handler to vis objects
+          $(MyEventHandler).bind("selectionChanged", function(event, surgery) {
+              playerVis.onSelectionChange(surgery["id"]);
+          });
         }
 
         var formatData = function(error, _allData) {

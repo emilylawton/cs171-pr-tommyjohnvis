@@ -87,7 +87,11 @@ CountVis.prototype.updateVis = function() {
 
   enter_nodes
     .append("circle")
-    .attr("r", 4);
+    .attr("r", 4)
+    .on("click", function(d) {
+      console.log(d.mlbamid);
+      $(that.eventHandler).trigger("selectionChanged", {"id": d.mlbamid}); 
+    });
 
   this.force
     .nodes(this.graph.nodes)
