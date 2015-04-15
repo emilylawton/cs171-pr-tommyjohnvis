@@ -5,11 +5,17 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.data = _data;
   this.eventHandler = _eventHandler;
   this.displayData = [];
+  this.graph = {nodes: [], links: []};
+  this.inventory = [];
 
   // define svg constants
-  this.margin = {top: 20, right: 0, bottom: 30, left: 80};
+  this.margin = {top: 20, right: 20, bottom: 30, left: 80};
   this.width = 700 - this.margin.left - this.margin.right;
   this.height = 400 - this.margin.top - this.margin.bottom;
+
+  this.force = d3.layout.force()
+    .charge(-100)
+    .size([this.width, this.height]);
 
   this.wrangleData();
   this.initVis();
@@ -40,12 +46,6 @@ CountVis.prototype.initVis = function() {
     .scale(this.y)
     .orient("left");
 
-  this.area = d3.svg.area()
-    .interpolate("monotone")
-    .x(function(d) {return that.x(d.time); })
-    .y0(this.height)
-    .y1(function(d) { return that.y(d.count); });
-
   // add axes visual elemnents
   this.svg.append("g")
       .attr("class", "x axis")
@@ -64,6 +64,7 @@ CountVis.prototype.initVis = function() {
 }
 
 CountVis.prototype.updateVis = function() {
+  that = this;
   // update scales
   this.x.domain(d3.extent(this.displayData, function(d) { return d.surg_date; }));
   this.y.domain([1,6]);
@@ -75,25 +76,50 @@ CountVis.prototype.updateVis = function() {
   this.svg.select(".y.axis")
     .call(this.yAxis);
 
-  // updates graph
-  var path = this.svg.selectAll("area")
-    .data([this.displayData]);
+  // join
+  this.node = this.svg.selectAll(".node")
+    .data(this.graph.nodes)
 
-  path.enter()
-    .append("path")
-    .attr("class", "area");
+  enter_nodes = this.node
+    .enter()
+    .append("g")
+    .attr("class", "row");
 
-  path
-    .transition()
-    .attr("d", this.area);
+  enter_nodes
+    .append("circle")
+    .attr("r", 4);
 
-  path.exit()
-    .remove();
+  this.force
+    .nodes(this.graph.nodes)
+    .start();
+
+var dateFormatter = d3.time.format("%m/%Y");
+var h = 1;
+var prev = dateFormatter("1/1900");
+
+this.graph.nodes.forEach(function(d, i) {
+    d.x = that.x(d.surg_date);
+
+    h = d.surg_date == prev ? h + 1 : 1;
+    d.y = h;
+    prev = d.surg_date;
+  });
+
+  this.graphUpdate(0);
 
 }
 
+CountVis.prototype.graphUpdate = function(duration) {
+  this.node.transition().duration(duration)
+    .attr("transform", function(d) { 
+      return "translate("+d.x+","+d.y+")"; 
+    });
+}
 CountVis.prototype.wrangleData = function() {
-  this.displayData = this.data;
+  var new_data = this.data;
+  // filter if necessary
+
+  this.graph.nodes = new_data;
 }
 
 

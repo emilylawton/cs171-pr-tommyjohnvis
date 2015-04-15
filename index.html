@@ -57,7 +57,7 @@
         // global data variable
         var allData = [];
         // convert strings to Date objects
-        var dateFormatter = d3.time.format("%m/%d/%Y");
+        var dateFormatter = d3.time.format("%m/%Y");
 
         var initVis = function() {
           // create event handler
@@ -72,10 +72,13 @@
         var formatData = function(error, _allData) {
           if (!error) {
             allData = _allData.map(function (d) {
+              surg_split = d["TJ Surgery Date"].split("/");
+              return_split = d["Return Date (same level)"].split("/");
+              
               var surgeryInstance = {
                 majors: d["Majors"] == "Y" ? true : false,
                 post_games: parseInt(d["Post-TJ MLB G"]),
-                surg_date: dateFormatter.parse(d["TJ Surgery Date"]),
+                surg_date: dateFormatter.parse(surg_split[0] + "/" + surg_split[2]),
                 post_ippa: parseInt(d["Post-TJ MLB IP/PA"]),
                 mlbamid: parseInt(d["mlbamid"]),
                 country: d["Country"],
@@ -88,7 +91,7 @@
                 active: d["active"] == "1" ? true : false,
                 position: d["Position"],
                 recovery: d["Recovery Time (months)"],
-                return_date: dateFormatter.parse(d["Return Date (same level)"])
+                return_date: dateFormatter.parse(return_split[0] + "/" + return_split[2])
               }
               return surgeryInstance;
             });
@@ -106,13 +109,6 @@
         }
 
         loadData();
-
-        // helper function to get width of d3 element
-        var getInnerWidth = function(element) {
-            var style = window.getComputedStyle(element.node(), null);
-
-            return parseInt(style.getPropertyValue('width'));
-        }
       });
   </script>
 </body>
