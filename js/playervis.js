@@ -31,20 +31,12 @@ PlayerVis.prototype.initVis = function(){
       .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-    // add player image 
-    // this.svg.append("image")
-    //   .attr("xlink:href", "img/players/" + this.data[5].mlbamid + ".jpg")
-    // 	.attr("width", this.width)
-    // 	.attr("height", this.height);
-
   this.updateVis();
 }
 
 PlayerVis.prototype.updateVis = function() {
 
-  that = this; 
-
-  console.log(this.displayData[0].mlbamid);
+  var that = this; 
 
   this.svg.select("image")
     .remove()
