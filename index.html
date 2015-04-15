@@ -50,7 +50,42 @@
         <text = x="50" y ="50">HERE should be little Histograms</text>
       </svg>
     </div>
+
+    <script>
+      $(function() {
+        // global data variable
+        var allData = [];
+
+        var initVis = function(_allData) {
+          allData = _allData;
+          // create event handler
+          var MyEventHandler = new Object();
+
+          // instantiate vis objects
+          var countVis = new CountVis(d3.select("#countVis"), allData, MyEventHandler);
+
+          // bind event handler to vis objects
+        }
+
+        // load data, then init vis
+        var loadData = function() {
+          queue()
+            .defer(d3.json, "data/tjs.json")
+            .await(initVis);
+        }
+
+        loadData();
+
+        // helper function to get width of d3 element
+        var getInnerWidth = function(element) {
+            var style = window.getComputedStyle(element.node(), null);
+
+            return parseInt(style.getPropertyValue('width'));
+        }
+      });
+  </script>
 </body>
+
 </html>
 
 
