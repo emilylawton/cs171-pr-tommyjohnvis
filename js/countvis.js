@@ -5,13 +5,13 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.data = _data;
   this.eventHandler = _eventHandler;
   this.displayData = [];
-  this.displayData = this.data;
-  
+
   // define svg constants
-  this.margin = {top: 20, right: 0, bottom: 30};
-  this.width = getInnerWidth(this.parentElement) - this.margin.left - this.margin.right;
+  this.margin = {top: 20, right: 0, bottom: 30, left: 80};
+  this.width = 700 - this.margin.left - this.margin.right;
   this.height = 400 - this.margin.top - this.margin.bottom;
 
+  this.wrangleData();
   this.initVis();
 }
 
@@ -59,14 +59,14 @@ CountVis.prototype.initVis = function() {
       .attr("dy", ".71em")
       .style("text-anchor", "end")
 
-  this.UpdateVis();
+  this.updateVis();
 
 }
 
 CountVis.prototype.updateVis = function() {
   // update scales
-  this.x.domain(d3.extent(this.displayData, function(d) { return d.time; }));
-  this.y.domain(d3.extent(this.displayData, function(d) { return d.count; }));
+  this.x.domain(d3.extent(this.displayData, function(d) { return d.surg_date; }));
+  this.y.domain([1,6]);
 
   // update axis
   this.svg.select(".x.axis")
@@ -92,8 +92,9 @@ CountVis.prototype.updateVis = function() {
 
 }
 
-
-
+CountVis.prototype.wrangleData = function() {
+  this.displayData = this.data;
+}
 
 
 
