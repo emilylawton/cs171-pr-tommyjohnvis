@@ -56,7 +56,6 @@ PlayerVis.prototype.updateVis = function() {
     .attr("height", this.height)
     // TODO: TEXT ATTRIBUTES 
     .append("text")
-      .att
       .text(function() {
         return that.displayData[0].player;
       });
