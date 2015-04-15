@@ -53,7 +53,13 @@ PlayerVis.prototype.updateVis = function() {
   this.svg.append("image")
     .attr("xlink:href", "img/players/" + this.displayData[0].mlbamid + ".jpg")
     .attr("width", this.width)
-    .attr("height", this.height);
+    .attr("height", this.height)
+    // TODO: TEXT ATTRIBUTES 
+    .append("text")
+      .att
+      .text(function() {
+        return that.displayData[0].player;
+      });
 
 }
 
