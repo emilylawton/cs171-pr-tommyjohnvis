@@ -66,7 +66,7 @@ CountVis.prototype.initVis = function() {
 CountVis.prototype.updateVis = function() {
   that = this;
   // update scales
-  this.x.domain(d3.extent(this.displayData, function(d) { return d.surg_date; }));
+  this.x.domain(d3.extent(this.graph.nodes, function(d) { return d.surg_date; }));
   this.y.domain([1,6]);
 
   // update axis
@@ -94,13 +94,15 @@ CountVis.prototype.updateVis = function() {
     .start();
 
 var dateFormatter = d3.time.format("%m/%Y");
+var prev = dateFormatter.parse("10/1921");
 var h = 1;
-var prev = dateFormatter("1/1900");
+
 
 this.graph.nodes.forEach(function(d, i) {
     d.x = that.x(d.surg_date);
+    
+    h = (d.surg_date.getTime() == prev.getTime()) ? h + 1 : 1;
 
-    h = d.surg_date == prev ? h + 1 : 1;
     d.y = h;
     prev = d.surg_date;
   });

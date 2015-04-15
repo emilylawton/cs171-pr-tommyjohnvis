@@ -20,7 +20,7 @@
 
   <!-- Vis Classes -->
   <script src="js/countvis.js"></script>
-  <script scr="js/playervis.js"></script>
+  <script src="js/playervis.js"></script>
 
 </head>
 
@@ -61,7 +61,6 @@
 
           // instantiate vis objects
           var countVis = new CountVis(d3.select("#countVis"), allData, MyEventHandler);
-          console.log("HERE");
           var playerVis = new PlayerVis(d3.select("#playerVis"), allData);
 
           // bind event handler to vis objects
