@@ -39,10 +39,6 @@
       <div class="col-md-9" id="countVis">
       </div>
       <div class="col-md-3" id="playerVis">
-        <!-- TODO: delete placeholder svg element -->
-        <svg width="230" height="330" style="background-color: lightcoral">
-            <text x="0" y="50">Here should be the player information</text>
-        </svg>
       </div>
     </div>
 
@@ -65,6 +61,8 @@
 
           // instantiate vis objects
           var countVis = new CountVis(d3.select("#countVis"), allData, MyEventHandler);
+          console.log("HERE");
+          var playerVis = new PlayerVis(d3.select("#playerVis"), allData);
 
           // bind event handler to vis objects
         }
