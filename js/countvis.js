@@ -8,6 +8,11 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.graph = {nodes: [], links: []};
   this.inventory = [];
 
+  // finding occurences
+  this.occurences = {};
+  this.maxDate;
+  this.maxOccurence = 0;
+
   // define svg constants
   this.margin = {top: 20, right: 20, bottom: 30, left: 80};
   this.width = 700 - this.margin.left - this.margin.right;
@@ -65,9 +70,13 @@ CountVis.prototype.initVis = function() {
 
 CountVis.prototype.updateVis = function() {
   that = this;
+  
+  // set global occurence variables
+  this.setOccurences(this.graph.nodes);
+
   // update scales
   this.x.domain(d3.extent(this.graph.nodes, function(d) { return d.surg_date; }));
-  this.y.domain([1,6]);
+  this.y.domain([1,this.maxOccurence]);
 
   // update axis
   this.svg.select(".x.axis")
@@ -99,17 +108,11 @@ CountVis.prototype.updateVis = function() {
     .start();
 
 var dateFormatter = d3.time.format("%m/%Y");
-var prev = dateFormatter.parse("10/1921");
-var h = 1;
-
 
 this.graph.nodes.forEach(function(d, i) {
-    d.x = that.x(d.surg_date);
-    
-    h = (d.surg_date.getTime() == prev.getTime()) ? h + 1 : 1;
-
-    d.y = h;
-    prev = d.surg_date;
+    d.x = that.x(d.surg_date);   
+    d.y = that.y(that.occurences[d.surg_date]);
+    that.occurences[d.surg_date]--;
   });
 
   this.graphUpdate(0);
@@ -129,10 +132,30 @@ CountVis.prototype.wrangleData = function() {
   this.graph.nodes = new_data;
 }
 
-
-
-
-
+// this function creates a map of Date Object -> # of occurences
+CountVis.prototype.setOccurences = function(data) {
+  this.maxDate = null;
+  this.maxOccurence = 0;
+  this.occurences = {};
+  
+  if (data.length != 0) {
+    // go through all surgery dates
+    for (var i = 0; i < data.length; i++) {
+      var date = data[i].surg_date;
+      // add to map or increase count by 1
+      if (this.occurences[date] == null)
+       this.occurences[date] = 1;
+      else
+        this.occurences[date]++;
+      
+      // if new max and modify accordingly
+      if (this.occurences[date] > this.maxOccurence) {
+        this.maxDate = date;
+        this.maxOccurence = this.occurences[date];
+      }
+    }
+  }
+}
 
 
 
