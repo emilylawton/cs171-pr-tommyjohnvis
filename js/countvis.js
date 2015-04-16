@@ -2,11 +2,11 @@
 // constructor
 CountVis = function(_parentElement, _data, _eventHandler) {
   this.parentElement = _parentElement;
-  this.data = _data;
+  this.data = this.copyData(_data, false);
   this.eventHandler = _eventHandler;
-  this.displayData = [];
   this.graph = {nodes: [], links: []};
   this.inventory = [];
+  this.xChange = function(d) { return d; }; 
 
   // finding occurences
   this.occurences = {};
@@ -22,11 +22,14 @@ CountVis = function(_parentElement, _data, _eventHandler) {
     .charge(-100)
     .size([this.width, this.height]);
 
-  this.wrangleData();
   this.initVis();
 }
 
 CountVis.prototype.initVis = function() {
+  this.graph.nodes = this.data.map(function(d) {
+    return d;
+  });
+
   var that = this;
 
   // constructs SVG layout
@@ -70,13 +73,13 @@ CountVis.prototype.initVis = function() {
 
 CountVis.prototype.updateVis = function() {
   that = this;
-  
+  console.log(this.data[0]);
   // set global occurence variables
   this.setOccurences(this.graph.nodes);
 
   // update scales
   this.x.domain(d3.extent(this.graph.nodes, function(d) { return d.surg_date; }));
-  this.y.domain([1,this.maxOccurence]);
+  this.y.domain([.75,this.maxOccurence]);
 
   // update axis
   this.svg.select(".x.axis")
@@ -92,30 +95,28 @@ CountVis.prototype.updateVis = function() {
   enter_nodes = this.node
     .enter()
     .append("g")
-    .attr("class", "row");
+    .attr("class", "node");
 
   enter_nodes
     .append("circle")
-    .on("click", function(d) {
-      console.log(d.mlbamid);
+    .on("mouseover", function(d) {
       $(that.eventHandler).trigger("selectionChanged", {"id": d.mlbamid}); 
     })
     .attr("r", 4);
-    
+
+  this.node.exit().remove();
 
   this.force
     .nodes(this.graph.nodes)
     .start();
 
-var dateFormatter = d3.time.format("%m/%Y");
+  this.graph.nodes.forEach(function(d, i) {
+      d.x = that.x(d.surg_date);   
+      d.y = that.y(that.occurences[d.surg_date]);
+      that.occurences[d.surg_date]--;
+    });
 
-this.graph.nodes.forEach(function(d, i) {
-    d.x = that.x(d.surg_date);   
-    d.y = that.y(that.occurences[d.surg_date]);
-    that.occurences[d.surg_date]--;
-  });
-
-  this.graphUpdate(0);
+  this.graphUpdate(1000);
 
 }
 
@@ -124,12 +125,6 @@ CountVis.prototype.graphUpdate = function(duration) {
     .attr("transform", function(d) { 
       return "translate("+d.x+","+d.y+")"; 
     });
-}
-CountVis.prototype.wrangleData = function() {
-  var new_data = this.data;
-  // filter if necessary
-
-  this.graph.nodes = new_data;
 }
 
 // this function creates a map of Date Object -> # of occurences
@@ -157,12 +152,47 @@ CountVis.prototype.setOccurences = function(data) {
   }
 }
 
+// this changes how the data is grouped, by month or year
+CountVis.prototype.changeGrouping = function(setting) {
+  if (setting == "month") {
+    this.graph.nodes = this.copyData(this.data, false);
+  }
+  else {
+    this.graph.nodes = this.copyData(this.data, true);
+  }
+  this.updateVis();
+}
 
+// copys the array of objects, by creating new objects
+// this is necessary so that the original data object does not get modified
+CountVis.prototype.copyData = function(data, modify) {
+  var dateFormatter2 = d3.time.format("%Y");
+  var newData = data.map(function(d) { 
+    var surgeDate;
+    surgeDate = modify ? dateFormatter2.parse(dateFormatter2(d.surg_date)) : d.surg_date; 
+    
+    var newObject = {
+      majors: d.majors,
+      post_games: d.post_games,
+      surg_date: surgeDate,
+      post_ippa: d.post_ippa,
+      mlbamid: d.mlbamid,
+      country: d.country,
+      age: d.age,
+      surgeons: d.surgeons,
+      player: d.player,
+      high_school: d.high_school,
+      college: d.college,
+      team: d.team,
+      active: d.active,
+      position: d.position,
+      recovery: d.recovery,
+      return_date: d.return_date
+    }
+    return newObject;
+  });
 
-
-
-
-
-
+  return newData;
+}
 
 

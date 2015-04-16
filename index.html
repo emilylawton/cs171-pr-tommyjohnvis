@@ -30,9 +30,11 @@
 
     <!-- Filtering Options -->
     <div class="row">
-      <svg width="900" height="100" style="background-color: lightyellow">
-        <text = x="50" y ="50">HERE should be filtering options</text>
-      </svg>
+      <form>
+        X-axis:
+        <label><input type="radio" name="x-axis" value="month" checked>by Month</label>
+        <label><input type="radio" name="x-axis" value="year">by Year</label>
+      </form>
     </div>
 
     <div class="row">
@@ -55,17 +57,20 @@
         // convert strings to Date objects
         var dateFormatter = d3.time.format("%m/%Y");
 
+        // vis objects
+        var countVis, playerVis;
+
         var initVis = function() {
           // create event handler
           var MyEventHandler = new Object();
 
           // instantiate vis objects
-          var countVis = new CountVis(d3.select("#countVis"), allData, MyEventHandler);
-          var playerVis = new PlayerVis(d3.select("#playerVis"), allData);
+          countVis = new CountVis(d3.select("#countVis"), allData, MyEventHandler);
+          playerVis = new PlayerVis(d3.select("#playerVis"), allData);
 
           // bind event handler to vis objects
           $(MyEventHandler).bind("selectionChanged", function(event, surgery) {
-              playerVis.onSelectionChange(surgery["id"]);
+            playerVis.onSelectionChange(surgery["id"]);
           });
         }
 
@@ -96,7 +101,6 @@
               return surgeryInstance;
             });
 
-            console.log(allData);
             initVis();
           }
         }
@@ -109,45 +113,15 @@
         }
 
         loadData();
+
+        // if you should change the x axis
+        d3.selectAll("input[name=\"x-axis\"]").on("change", function() {
+          var setting = document.querySelector('input[name="x-axis"]:checked').value;
+
+          countVis.changeGrouping(setting);
+        });
       });
   </script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- Add Vis Classes -->
-  <!-- TODO -->
-
