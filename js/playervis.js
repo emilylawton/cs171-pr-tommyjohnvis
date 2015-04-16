@@ -41,16 +41,40 @@ PlayerVis.prototype.updateVis = function() {
   this.svg.select("image")
     .remove()
 
+  this.svg.selectAll("text")
+    .remove()
+
   // add player image 
   this.svg.append("image")
     .attr("xlink:href", "img/players/" + this.displayData[0].mlbamid + ".jpg")
     .attr("width", this.width)
-    .attr("height", this.height)
-    // TODO: TEXT ATTRIBUTES 
-    .append("text")
+    .attr("height", this.height);
+  
+  // player name 
+  this.svg.append("text")
+      .attr("y", 50)
+      .attr("font-size", "30px")
       .text(function() {
         return that.displayData[0].player;
       });
+
+  // surgery date 
+  // TODO: format surgery date 
+  this.svg.append("text")
+    .attr("y", 300)
+    .attr("font-size", "10px")
+    .text(function() {
+      return "Surgery Date: " + that.displayData[0].surg_date;
+    });
+
+  // recovery time
+  this.svg.append("text")
+    .attr("y", 320)
+    .attr("font-size", "10px")
+    .text(function() {
+      return "Recovery Time: " + that.displayData[0].recovery;
+    })
+
 
 }
 

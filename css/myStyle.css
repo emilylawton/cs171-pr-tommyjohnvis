@@ -11,3 +11,10 @@ circle {
 circle:hover {
   fill: red;
 }
+
+body{
+	font-family: 'PT Sans', sans-serif;
+}
+.axis text {
+	font: 10px sans-serif;
+}

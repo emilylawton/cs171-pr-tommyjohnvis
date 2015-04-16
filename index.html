@@ -10,6 +10,8 @@
   <script src="http://d3js.org/queue.v1.min.js"></script>
   <script src="libs/jquery/jquery-2.1.3.min.js" charset="utf-8"></script>
   <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+  <script src="libs/bootstrap/js/typeahead.js" charset="utf-8"></script>
+
 
   <!-- Bootstrap -->
   <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
@@ -41,6 +43,7 @@
       <div class="col-md-9" id="countVis">
       </div>
       <div class="col-md-3" id="playerVis">
+        <input type="text" id="searchPlayer" onkeypress="searchForPlayer(event)" placeholder="Enter player name...">
       </div>
     </div>
 
@@ -51,9 +54,14 @@
     </div>
 
     <script>
+
+      // globals 
+      var allData; 
+      var MyEventHandler; 
+
       $(function() {
         // global data variable
-        var allData = [];
+        allData = [];
         // convert strings to Date objects
         var dateFormatter = d3.time.format("%m/%Y");
 
@@ -62,7 +70,7 @@
 
         var initVis = function() {
           // create event handler
-          var MyEventHandler = new Object();
+          MyEventHandler = new Object();
 
           // instantiate vis objects
           countVis = new CountVis(d3.select("#countVis"), allData, MyEventHandler);
@@ -72,6 +80,21 @@
           $(MyEventHandler).bind("selectionChanged", function(event, surgery) {
             playerVis.onSelectionChange(surgery["id"]);
           });
+
+          // all player names 
+          var name_data = allData.map(function(d) { return d.player; });
+
+          // player search box 
+          // TODD: specify number of suggestions
+          $('#searchPlayer').typeahead({
+            hint: true, 
+            highlight: true, 
+            minLength: 1
+          },
+          {
+            displayKey: 'value',
+            source: substringMatcher(name_data)
+          }); 
         }
 
         var formatData = function(error, _allData) {
@@ -120,7 +143,52 @@
 
           countVis.changeGrouping(setting);
         });
+
+        // find player matches as user types in search box 
+        function substringMatcher(strs) {
+          return function findMatches(q, cb) {
+            var matches, substrRegex;
+         
+            // an array that will be populated with substring matches
+            matches = [];
+         
+            // regex used to determine if a string contains the substring `q`
+            substrRegex = new RegExp(q, 'i');
+         
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs, function(i, str) {
+              if (substrRegex.test(str)) {
+                // the typeahead jQuery plugin expects suggestions to a
+                // JavaScript object, refer to typeahead docs for more info
+                matches.push({ value: str });
+              }
+            });
+         
+            cb(matches);
+          };
+        };
+
       });
+
+      
+      function searchForPlayer (e) {
+        // if ENTER key is pressed 
+        if (e.keyCode == 13) {
+          var name = document.getElementById("searchPlayer").value;
+
+          var p = allData.filter(function(d) {
+            return d.player == name; 
+          });
+
+          var id = p[0]["mlbamid"];
+
+          // trigger event to change player profile
+          $(MyEventHandler).trigger("selectionChanged", {"id": id});
+
+          // TODO: highlight surgery instances in countvis
+        }
+      }
   </script>
 </body>
 
