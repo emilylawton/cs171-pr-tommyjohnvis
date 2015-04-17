@@ -58,23 +58,63 @@ PlayerVis.prototype.updateVis = function() {
         return that.displayData[0].player;
       });
 
+  var y = 300 
+
+  // TODO: ABSTRACT
+
   // surgery date 
-  // TODO: format surgery date 
   this.svg.append("text")
-    .attr("y", 300)
+    .attr("y", y)
     .attr("font-size", "10px")
     .text(function() {
-      return "Surgery Date: " + that.displayData[0].surg_date;
+      y += 15; 
+      var date = that.displayData[0].surg_date; 
+      return "Surgery Date: " + (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
     });
 
-  // recovery time
-  this.svg.append("text")
-    .attr("y", 320)
-    .attr("font-size", "10px")
-    .text(function() {
-      return "Recovery Time: " + that.displayData[0].recovery;
-    })
+  // surgeon(s) 
+  if (that.displayData[0].surgeons) {
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return "Surgeon(s): " + that.displayData[0].surgeons; 
+      });
+  }
 
+  // recovery time 
+  if (that.displayData[0].recovery) {
+    this.svg.append("text")
+      .attr("y", y)
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return "Recovery Time: " + that.displayData[0].recovery + " months";
+      });
+  }
+
+  // team 
+  if (that.displayData[0].team) {
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return "Team: " + that.displayData[0].team;
+      });
+  }
+
+  // position 
+  if (that.displayData[0].position) {
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return "Position: " + that.displayData[0].position;
+      });
+  }
 
 }
 

@@ -89,7 +89,7 @@
           $('#searchPlayer').typeahead({
             hint: true, 
             highlight: true, 
-            minLength: 1
+            minLength: 2,
           },
           {
             displayKey: 'value',
@@ -157,8 +157,11 @@
          
             // iterate through the pool of strings and for any string that
             // contains the substring `q`, add it to the `matches` array
+            // NOTE: matches.length < 1 is a hacky way of restricting the 
+            // matches list to only 1. 
+            // TODO: use maxLength attribute instead 
             $.each(strs, function(i, str) {
-              if (substrRegex.test(str)) {
+              if (substrRegex.test(str) && matches.length < 1) {
                 // the typeahead jQuery plugin expects suggestions to a
                 // JavaScript object, refer to typeahead docs for more info
                 matches.push({ value: str });
@@ -173,12 +176,14 @@
 
       
       function searchForPlayer (e) {
+        // TODO: have a search button instead of having user press enter? 
+
         // if ENTER key is pressed 
         if (e.keyCode == 13) {
           var name = document.getElementById("searchPlayer").value;
 
           var p = allData.filter(function(d) {
-            return d.player == name; 
+            return d.player.toLowerCase() == name.toLowerCase(); 
           });
 
           var id = p[0]["mlbamid"];
