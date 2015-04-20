@@ -10,6 +10,8 @@
   <script src="http://d3js.org/queue.v1.min.js"></script>
   <script src="libs/jquery/jquery-2.1.3.min.js" charset="utf-8"></script>
   <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
   <!-- Bootstrap -->
   <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
@@ -32,9 +34,15 @@
     <div class="row">
       <form>
         X-axis:
-        <label><input type="radio" name="x-axis" value="month" checked>by Month</label>
-        <label><input type="radio" name="x-axis" value="year">by Year</label>
+        <label><input type="radio" name="x-axis" value="month">by Month</label>
+        <label><input type="radio" name="x-axis" value="year" checked>by Year</label>
       </form>
+    </div>
+    <div>
+      <p>
+        <label for="ageRange">Ages:</label>
+        <input type="text" id="ageRange" readonly>
+      <div class="col-md-5" id="ageSlider"></div>
     </div>
 
     <div class="row">
@@ -72,6 +80,22 @@
           $(MyEventHandler).bind("selectionChanged", function(event, surgery) {
             playerVis.onSelectionChange(surgery["id"]);
           });
+
+          var minMax = countVis.findMinMax();
+          // add slider
+          $("#ageSlider").slider({
+            range: true,
+            min: minMax[0],
+            max: minMax[1],
+            values: [minMax[0], minMax[1]],
+            slide: function( event, ui ) {
+              $("#ageRange").val(ui.values[0] + " - " + ui.values[1]);
+              countVis.filterAge(ui.values[0], ui.values[1]);
+            }
+          });
+          
+          $("#ageRange").val($("#ageSlider").slider("values",0) +
+            " - " + $("#ageSlider").slider("values",1));
         }
 
         var formatData = function(error, _allData) {
