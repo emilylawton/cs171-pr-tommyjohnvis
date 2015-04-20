@@ -5,8 +5,6 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.data = this.copyData(_data, false);
   this.eventHandler = _eventHandler;
   this.graph = {nodes: [], links: []};
-  this.inventory = [];
-  this.xChange = function(d) { return d; }; 
 
   // finding occurences
   this.occurences = {};
@@ -26,9 +24,7 @@ CountVis = function(_parentElement, _data, _eventHandler) {
 }
 
 CountVis.prototype.initVis = function() {
-  this.graph.nodes = this.data.map(function(d) {
-    return d;
-  });
+  this.graph.nodes = this.copyData(this.data, true);
 
   var that = this;
 
@@ -73,13 +69,20 @@ CountVis.prototype.initVis = function() {
 
 CountVis.prototype.updateVis = function() {
   that = this;
-  console.log(this.data[0]);
+
   // set global occurence variables
   this.setOccurences(this.graph.nodes);
 
   // update scales
   this.x.domain(d3.extent(this.graph.nodes, function(d) { return d.surg_date; }));
-  this.y.domain([.75,this.maxOccurence]);
+
+  if (this.maxOccurence < 43) {
+    // this elimates whitespace between the circles
+    this.y.domain([.75, 43]);
+  }
+  else {
+    this.y.domain([.75,this.maxOccurence]);
+  }
 
   // update axis
   this.svg.select(".x.axis")
@@ -116,7 +119,7 @@ CountVis.prototype.updateVis = function() {
       that.occurences[d.surg_date]--;
     });
 
-  this.graphUpdate(1000);
+  this.graphUpdate(200);
 
 }
 
@@ -195,4 +198,28 @@ CountVis.prototype.copyData = function(data, modify) {
   return newData;
 }
 
+CountVis.prototype.filterAge = function(min, max) {
+  this.graph.nodes = this.copyData(this.data, false);
+  this.graph.nodes = this.graph.nodes.filter(function(d) {
+    return d.age >= min && d.age <= max;
+  }); 
 
+  this.updateVis();
+}
+
+CountVis.prototype.findMinMax = function() {
+  if (this.data.length == 0)
+    return [0,0];
+  
+  var min = 100;
+  var max = 0;
+
+  this.data.forEach(function(d) {
+    if (d.age > max)
+      max = d.age;
+    if (d.age < min)
+      min = d.age;
+  });
+
+  return [min,max];
+}
