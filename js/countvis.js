@@ -23,7 +23,8 @@ CountVis = function(_parentElement, _data, _eventHandler) {
 }
 
 CountVis.prototype.initVis = function() {
-  this.graph.nodes = this.copyData(this.data, true);
+  this.graph.nodes = this.copyData(this.data);
+  this.changeGrouping("year");
 
   var that = this;
 

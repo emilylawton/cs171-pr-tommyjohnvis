@@ -35,9 +35,9 @@
     <!-- Filtering Options -->
     <div class="row">
       <form>
-        X-axis:
-        <label><input type="radio" name="x-axis" value="month">by Month</label>
-        <label><input type="radio" name="x-axis" value="year" checked>by Year</label>
+        Grouping:
+        <label><input type="radio" name="grouping" value="month">by Month</label>
+        <label><input type="radio" name="grouping" value="year" checked>by Year</label>
       </form>
     </div>
     <div>
@@ -164,8 +164,8 @@
 
         loadData();
 
-        // if you should change the x axis
-        d3.selectAll("input[name=\"x-axis\"]").on("change", function() {
+        // when the grouping is changed
+        d3.selectAll("input[name=\"grouping\"]").on("change", function() {
           countVis.userChange(displaySettings());
         });
 
@@ -220,10 +220,10 @@
         }
       }
 
-      // returns an object [x-axis, ages] where x-axis can be "month" or "year"
+      // returns an object [grouping, ages] where grouping can be "month" or "year"
       // ages is min and max value of the slider
       function displaySettings() {
-        var g = document.querySelector('input[name="x-axis"]:checked').value;
+        var g = document.querySelector('input[name="grouping"]:checked').value;
         var a = [$("#ageSlider").slider("values",0), $("#ageSlider").slider("values",1)]; 
         return {grouping: g, ages: a}
       }
