@@ -65,7 +65,8 @@
 
       // globals 
       var allData; 
-      var MyEventHandler; 
+      var MyEventHandler;
+      var minAge, maxAge; 
 
       $(function() {
         // global data variable
@@ -112,8 +113,10 @@
             max: minMax[1],
             values: [minMax[0], minMax[1]],
             slide: function( event, ui ) {
+              // change display values
               $("#ageRange").val(ui.values[0] + " - " + ui.values[1]);
-              countVis.filterAge(ui.values[0], ui.values[1]);
+              
+              countVis.userChange(displaySettings());
             }
           });
           
@@ -163,9 +166,7 @@
 
         // if you should change the x axis
         d3.selectAll("input[name=\"x-axis\"]").on("change", function() {
-          var setting = document.querySelector('input[name="x-axis"]:checked').value;
-
-          countVis.changeGrouping(setting);
+          countVis.userChange(displaySettings());
         });
 
         // find player matches as user types in search box 
@@ -217,6 +218,14 @@
 
           // TODO: highlight surgery instances in countvis
         }
+      }
+
+      // returns an object [x-axis, ages] where x-axis can be "month" or "year"
+      // ages is min and max value of the slider
+      function displaySettings() {
+        var g = document.querySelector('input[name="x-axis"]:checked').value;
+        var a = [$("#ageSlider").slider("values",0), $("#ageSlider").slider("values",1)]; 
+        return {grouping: g, ages: a}
       }
   </script>
 </body>

@@ -1,4 +1,3 @@
-
 // constructor
 CountVis = function(_parentElement, _data, _eventHandler) {
   this.parentElement = _parentElement;
@@ -130,6 +129,72 @@ CountVis.prototype.graphUpdate = function(duration) {
     });
 }
 
+// when the user changes one of the display options,
+// this function is called with the appopriate new settings
+CountVis.prototype.userChange = function(settings) {
+  this.graph.nodes = this.copyData(this.data);
+ 
+  // change grouping if necessary
+  this.changeGrouping(settings["grouping"]);
+
+  // filter by the selected ages
+  this.filterAge(settings["ages"][0], settings["ages"][1]);
+
+  // update display
+  this.updateVis();
+}
+
+// find the min and max of data
+CountVis.prototype.findMinMax = function() {
+  if (this.data.length == 0)
+    return [0,0];
+  
+  var min = 100;
+  var max = 0;
+
+  this.data.forEach(function(d) {
+    if (d.age > max)
+      max = d.age;
+    if (d.age < min)
+      min = d.age;
+  });
+
+  return [min,max];
+}
+
+
+/*****************************************************
+ Helper Functions
+*****************************************************/
+
+// copys the array of objects, by creating new objects
+// this is necessary so that the original data object does not get changed
+CountVis.prototype.copyData = function(data) {
+  var copiedData = data.map(function(d) { 
+    var newObject = {
+      majors: d.majors,
+      post_games: d.post_games,
+      surg_date: d.surg_date,
+      post_ippa: d.post_ippa,
+      mlbamid: d.mlbamid,
+      country: d.country,
+      age: d.age,
+      surgeons: d.surgeons,
+      player: d.player,
+      high_school: d.high_school,
+      college: d.college,
+      team: d.team,
+      active: d.active,
+      position: d.position,
+      recovery: d.recovery,
+      return_date: d.return_date
+    }
+    return newObject;
+  });
+
+  return copiedData;
+}
+
 // this function creates a map of Date Object -> # of occurences
 CountVis.prototype.setOccurences = function(data) {
   this.maxDate = null;
@@ -155,71 +220,20 @@ CountVis.prototype.setOccurences = function(data) {
   }
 }
 
-// this changes how the data is grouped, by month or year
-CountVis.prototype.changeGrouping = function(setting) {
-  if (setting == "month") {
-    this.graph.nodes = this.copyData(this.data, false);
-  }
-  else {
-    this.graph.nodes = this.copyData(this.data, true);
-  }
-  this.updateVis();
-}
-
-// copys the array of objects, by creating new objects
-// this is necessary so that the original data object does not get modified
-CountVis.prototype.copyData = function(data, modify) {
-  var dateFormatter2 = d3.time.format("%Y");
-  var newData = data.map(function(d) { 
-    var surgeDate;
-    surgeDate = modify ? dateFormatter2.parse(dateFormatter2(d.surg_date)) : d.surg_date; 
-    
-    var newObject = {
-      majors: d.majors,
-      post_games: d.post_games,
-      surg_date: surgeDate,
-      post_ippa: d.post_ippa,
-      mlbamid: d.mlbamid,
-      country: d.country,
-      age: d.age,
-      surgeons: d.surgeons,
-      player: d.player,
-      high_school: d.high_school,
-      college: d.college,
-      team: d.team,
-      active: d.active,
-      position: d.position,
-      recovery: d.recovery,
-      return_date: d.return_date
-    }
-    return newObject;
-  });
-
-  return newData;
-}
-
+// filter this.graph.nodes by given age range
 CountVis.prototype.filterAge = function(min, max) {
-  this.graph.nodes = this.copyData(this.data, false);
   this.graph.nodes = this.graph.nodes.filter(function(d) {
     return d.age >= min && d.age <= max;
   }); 
-
-  this.updateVis();
 }
 
-CountVis.prototype.findMinMax = function() {
-  if (this.data.length == 0)
-    return [0,0];
-  
-  var min = 100;
-  var max = 0;
-
-  this.data.forEach(function(d) {
-    if (d.age > max)
-      max = d.age;
-    if (d.age < min)
-      min = d.age;
-  });
-
-  return [min,max];
+// data is already grouped by year, only change if year
+CountVis.prototype.changeGrouping = function(grouping) {
+  if (grouping == "year") {
+    var dateFormatter2 = d3.time.format("%Y");
+    this.graph.nodes.map(function (d) {
+      d.surg_date = dateFormatter2.parse(dateFormatter2(d.surg_date));
+      return d;
+    });
+  }
 }
