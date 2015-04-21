@@ -25,6 +25,7 @@
   <!-- Vis Classes -->
   <script src="js/countvis.js"></script>
   <script src="js/playervis.js"></script>
+  <script src="js/recoveryvis.js"></script>
 
 </head>
 
@@ -56,9 +57,11 @@
     </div>
 
     <div class="row">
-      <svg width="900" height="150" style="background-color: lightgreen">
+      <div class="col-md-9" id="recoveryVis">
+      </div>
+<!--       <svg width="900" height="150" style="background-color: lightgreen">
         <text = x="50" y ="50">HERE should be little Histograms</text>
-      </svg>
+      </svg> -->
     </div>
 
     <script>
@@ -84,6 +87,7 @@
           // instantiate vis objects
           countVis = new CountVis(d3.select("#countVis"), allData, MyEventHandler);
           playerVis = new PlayerVis(d3.select("#playerVis"), allData);
+          recoveryVis = new RecoveryVis(d3.select("#recoveryVis"), allData);
 
           // bind event handler to vis objects
           $(MyEventHandler).bind("selectionChanged", function(event, surgery) {
@@ -145,7 +149,7 @@
                 team: d["Team"],
                 active: d["active"] == "1" ? true : false,
                 position: d["Position"],
-                recovery: d["Recovery Time (months)"],
+                recovery: parseInt(d["Recovery Time (months)"]),
                 return_date: dateFormatter.parse(return_split[0] + "/" + return_split[2])
               }
               return surgeryInstance;
