@@ -18,3 +18,9 @@ body{
 .axis text {
 	font: 10px sans-serif;
 }
+
+.brush{
+    fill: darkgrey;
+    fill-opacity: .5;
+    pointer-events: none;
+}

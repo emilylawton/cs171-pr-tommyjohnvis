@@ -82,9 +82,8 @@ RecoveryVis.prototype.updateVis = function() {
 	this.x.domain([0,this.numberBins]);
 	this.y.domain([0, max]); 
 
-
 	// update axis
-	 this.svg.select(".x.axis")
+	this.svg.select(".x.axis")
  		.call(this.xAxis)
  		.attr("transform", "translate(0," + this.height + ")")
  		.selectAll("text")
@@ -128,7 +127,6 @@ RecoveryVis.prototype.updateVis = function() {
 
 }
 
-
 RecoveryVis.prototype.wrangleData = function(_filterFunction) {
 
 	this.displayData = this.filterAndAggregate(_filterFunction);
@@ -137,9 +135,9 @@ RecoveryVis.prototype.wrangleData = function(_filterFunction) {
 /**
 	Gets called by event handler
 */
-RecoveryVis.prototype.onSelectionChange = function(selectionStart, selectionEnd) {
-	// TODO - what function to pass in 
+RecoveryVis.prototype.onBrushChange = function(selectionStart, selectionEnd) {
 
+    this.wrangleData(function(d) { return d.surg_date >= selectionStart && d.surg_date <= selectionEnd; });
 	this.updateVis(); 
 }
 

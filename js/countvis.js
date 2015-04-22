@@ -50,6 +50,15 @@ CountVis.prototype.initVis = function() {
     .scale(this.y)
     .orient("left");
 
+  // create brush 
+  this.brush = d3.svg.brush()
+    .on("brush", function() {
+        $(that.eventHandler).trigger("brushChanged", {"start": that.brush.extent()[0], "end": that.brush.extent()[1]});
+    });
+
+  this.svg.append("g")
+    .attr("class", "brush");
+
   // add axes visual elemnents
   this.svg.append("g")
       .attr("class", "x axis")
@@ -118,6 +127,12 @@ CountVis.prototype.updateVis = function() {
       d.y = that.y(that.occurences[d.surg_date]);
       that.occurences[d.surg_date]--;
     });
+
+  this.brush.x(this.x);
+  this.svg.select(".brush")
+    .call(this.brush)
+    .selectAll("rect")
+    .attr("height", this.height);
 
   this.graphUpdate(200);
 

@@ -94,6 +94,10 @@
             playerVis.onSelectionChange(surgery["id"]);
           });
 
+          $(MyEventHandler).bind("brushChanged", function(event, extent) {
+            recoveryVis.onBrushChange(extent["start"], extent["end"]);
+          });
+
           // all player names 
           var name_data = allData.map(function(d) { return d.player; });
 
