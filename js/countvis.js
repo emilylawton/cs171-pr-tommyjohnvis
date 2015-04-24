@@ -4,6 +4,8 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.data = this.copyData(_data, false);
   this.eventHandler = _eventHandler;
   this.graph = {nodes: [], links: []};
+  this.hoverable = true;
+  this.clickedId = 0;
 
   // finding occurences
   this.occurences = {};
@@ -112,7 +114,19 @@ CountVis.prototype.updateVis = function() {
   enter_nodes
     .append("circle")
     .on("mouseover", function(d) {
-      $(that.eventHandler).trigger("selectionChanged", {"id": d.mlbamid}); 
+      if (that.hoverable) {
+        $(that.eventHandler).trigger("selectionChanged", {"id": d.mlbamid});
+      } 
+    })
+    .on("click", function(d) {
+      $(that.eventHandler).trigger("selectionChanged", {"id": d.mlbamid});
+      if (that.hoverable) {
+        that.hoverable = false;
+        that.clickedId = d.mlbamid;
+      }
+      else if (that.clickedId == d.mlbamid) {
+        that.hoverable = true;
+      }
     })
     .attr("r", 4);
 
