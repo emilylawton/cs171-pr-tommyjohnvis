@@ -48,8 +48,15 @@ PlayerVis.prototype.updateVis = function() {
   this.svg.append("image")
     .attr("xlink:href", "img/players/" + this.displayData[0].mlbamid + ".jpg")
     .attr("width", this.width)
-    .attr("height", this.height);
-  
+    .attr("height", this.height)
+    .attr("id", "playerImage");
+
+  // hide image not found icon
+  var img = document.getElementById("playerImage"); 
+  img.onerror = function () {
+    this.style.display = "none"; 
+  }
+
   // player name 
   this.svg.append("text")
       .attr("y", 50)
@@ -115,6 +122,15 @@ PlayerVis.prototype.updateVis = function() {
         return "Position: " + that.displayData[0].position;
       });
   }
+
+  // active status 
+  this.svg.append("text")
+    .attr("y", y)
+    .attr("font-size", "10px")
+    .text(function() {
+      y += 15;
+      return (that.displayData[0].active) ? "Active" : "Not Active";
+    });
 
 }
 

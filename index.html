@@ -151,7 +151,7 @@
                 high_school: d["High School"],
                 college: d["College"],
                 team: d["Team"],
-                active: d["active"] == "1" ? true : false,
+                active: parseInt(d["Active"]) == 1 ? true : false,
                 position: d["Position"],
                 recovery: parseInt(d["Recovery Time (months)"]),
                 return_date: dateFormatter.parse(return_split[0] + "/" + return_split[2])
