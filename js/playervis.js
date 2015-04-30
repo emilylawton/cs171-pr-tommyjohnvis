@@ -7,6 +7,26 @@
 PlayerVis = function(_parentElement, _data) {
 	this.parentElement = _parentElement;
 	this.data = _data; 
+
+
+  // compute average recovery time & average post TJ IP
+  totalMonths = 0; 
+  recoveryCount = 0;
+  totalIP = 0; 
+  ipCount = 0; 
+  for (surgery of this.data) {
+    if (surgery.recovery) {
+      recoveryCount+=1;
+      totalMonths += surgery.recovery;
+    }
+    if (surgery.post_ippa) {
+      ipCount+=1; 
+      totalIP += surgery.post_ippa; 
+    }
+  }
+  this.averageRecovery = totalMonths / recoveryCount; 
+  this.averageIP = totalIP / ipCount; 
+
 	// TODO - change to show default stats upon loading
 	this.displayData = [this.data[5]];
 
@@ -30,6 +50,41 @@ PlayerVis.prototype.initVis = function(){
         .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+  // create axis and scales
+  this.xIP = d3.scale.linear()
+    .range([0, this.width]); 
+
+  this.yIP = d3.scale.linear()
+    .range([100, 0]);
+
+  this.xAxisIP = d3.svg.axis()
+    .scale(this.xIP)
+    .orient("bottom");
+
+  this.yAxisIP = d3.svg.axis()
+    .scale(this.yIP)
+    .orient("left");
+
+  // add axes visual elements
+  this.svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0" + this.height + ")")
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dy", "1em")
+      .attr("transform", function(d) {
+        return "rotate(-65)"
+      });
+
+  this.svg.append("g")
+    .attr("class", "y axis")
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Post TJS IP compared to average");
 
   this.updateVis();
 }
@@ -131,6 +186,58 @@ PlayerVis.prototype.updateVis = function() {
       y += 15;
       return (that.displayData[0].active) ? "Active" : "Not Active";
     });
+
+  // compare post IP to average 
+  var IPcats = ["Average", that.displayData[0].player];
+  var IPData = [this.averageIP, that.displayData[0].post_ippa];
+  var max = d3.max(IPData);
+  this.xIP.domain([0,2]); 
+  this.yIP.domain([0, max]); 
+
+  // update axis
+  this.svg.select(".x.axis")
+    .call(this.xAxisIP)
+      .attr("transform", "translate(0," + this.height + ")")
+    .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", ".15em")
+        .attr("transform", function(d) {
+          return "rotate(-65)"
+        });
+
+  this.svg.select(".y.axis")
+    .call(this.yAxisIP);
+
+  // join
+  var bars = this.svg.selectAll("g.bar")
+    .data(IPData); 
+
+  // update 
+  bars.select("rect")
+    .transition()
+    .duration(500)
+    .attr("width", that.width/IPData.length - 3)
+    .attr("height", function(d) { return that.height - that.yIP(d); })
+    .attr("x", function(d, i) { return (i * (that.width / IPData.length)); })
+    .attr("y", function(d) { return that.yIP(d); })
+
+  // enter
+  var enter_rects = bars.enter()
+    .append("g")
+    .attr("class", "bar")
+    .append("rect")
+    .attr("width", that.width/IPData.length - 3) 
+    .attr("height", function(d) { return that.height - that.yIP(d); })
+    .attr("x", function(d, i) { return (i * (that.width / IPData.length)); })
+    .attr("y", function(d) { return that.yIP(d); })
+
+  // exit
+  bars
+    .exit()
+    .remove()
+
+
 
 }
 
