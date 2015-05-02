@@ -26,6 +26,7 @@ PlayerVis = function(_parentElement, _data) {
   }
   this.averageRecovery = totalMonths / recoveryCount; 
   this.averageIP = totalIP / ipCount; 
+  console.log(this.averageIP);
 
 	// TODO - change to show default stats upon loading
 	this.displayData = [this.data[5]];
@@ -33,7 +34,7 @@ PlayerVis = function(_parentElement, _data) {
 	// define svg constants  
 	this.margin = {top: 20, right: 0, bottom: 30, left: 0};
   	this.width = 300 - this.margin.left - this.margin.right;
-  	this.height = 400 - this.margin.top - this.margin.bottom;
+  	this.height = 600 - this.margin.top - this.margin.bottom;
 
   this.initVis();
 }
@@ -53,10 +54,10 @@ PlayerVis.prototype.initVis = function(){
 
   // create axis and scales
   this.xIP = d3.scale.linear()
-    .range([0, this.width]); 
+    .range([0, this.width*.75]); 
 
   this.yIP = d3.scale.linear()
-    .range([100, 0]);
+    .range([0, 100]);
 
   this.xAxisIP = d3.svg.axis()
     .scale(this.xIP)
@@ -79,6 +80,7 @@ PlayerVis.prototype.initVis = function(){
 
   this.svg.append("g")
     .attr("class", "y axis")
+    // .attr("transform", "translate(0" + this.height + ")")
     .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
@@ -92,6 +94,8 @@ PlayerVis.prototype.initVis = function(){
 PlayerVis.prototype.updateVis = function() {
 
   var that = this; 
+  error = false; 
+  var y = 215; 
 
   this.svg.select("image")
     .remove()
@@ -102,14 +106,34 @@ PlayerVis.prototype.updateVis = function() {
   // add player image 
   this.svg.append("image")
     .attr("xlink:href", "img/players/" + this.displayData[0].mlbamid + ".jpg")
-    .attr("width", this.width)
-    .attr("height", this.height)
+    .attr("width", this.width*.75)
+    .attr("height", this.height*.75)
+    .attr("y", -75)
     .attr("id", "playerImage");
 
   // hide image not found icon
   var img = document.getElementById("playerImage"); 
   img.onerror = function () {
     this.style.display = "none"; 
+    this.error = true; 
+    y = 100;
+
+    // that.svg.select("image").remove();
+    // console.log("BASEBALL IMAGE");
+    // that.svg.append("image")
+    //   .attr("xlink:href", "img/baseball.jpg")
+    //   .attr("width", this.width)
+    //   .attr("height", this.height)
+    //   .attr("id", "playerImage");
+  }
+
+  if (error) {
+    this.svg.select("image").remove();
+    this.svg.append("image")
+      .attr("xlink:href", "img/baseball.jpg")
+      .attr("width", this.width)
+      .attr("height", this.height)
+      .attr("id", "playerImage");
   }
 
   // player name 
@@ -119,8 +143,6 @@ PlayerVis.prototype.updateVis = function() {
       .text(function() {
         return that.displayData[0].player;
       });
-
-  var y = 300 
 
   // TODO: ABSTRACT
 
@@ -187,58 +209,66 @@ PlayerVis.prototype.updateVis = function() {
       return (that.displayData[0].active) ? "Active" : "Not Active";
     });
 
+  // temporary - post IP
+  this.svg.append("text")
+    .attr("y", y)
+    .attr("font-size", "10px")
+    .text(function() {
+      y += 15; 
+      return "Post TJS IP compared to average: " + (that.displayData[0].post_ippa); 
+    });
+
   // compare post IP to average 
   var IPcats = ["Average", that.displayData[0].player];
   var IPData = [this.averageIP, that.displayData[0].post_ippa];
   var max = d3.max(IPData);
-  this.xIP.domain([0,2]); 
-  this.yIP.domain([0, max]); 
+  this.xIP.domain([0, max*1.5]); 
+  this.yIP.domain(IPcats); 
 
-  // update axis
+  // update axis 
   this.svg.select(".x.axis")
     .call(this.xAxisIP)
-      .attr("transform", "translate(0," + this.height + ")")
+      .attr("transform", "translate(0," + (this.height - 200) + ")")
     .selectAll("text")
       .style("text-anchor", "end")
       .attr("dx", "-.8em")
       .attr("dy", ".15em")
         .attr("transform", function(d) {
           return "rotate(-65)"
-        });
+      });
 
   this.svg.select(".y.axis")
-    .call(this.yAxisIP);
+    .call(this.yAxisIP)
+      .attr("transform", "translate(0," + (this.height - 200) + ")"); 
+      
 
   // join
   var bars = this.svg.selectAll("g.bar")
     .data(IPData); 
 
-  // update 
+  // update
   bars.select("rect")
     .transition()
     .duration(500)
-    .attr("width", that.width/IPData.length - 3)
-    .attr("height", function(d) { return that.height - that.yIP(d); })
-    .attr("x", function(d, i) { return (i * (that.width / IPData.length)); })
-    .attr("y", function(d) { return that.yIP(d); })
+    .attr("width", function(d) { return that.xIP(d); })
+    .attr("height", 10)
+    .attr("x", 0)
+    .attr("y", function(d, i) { return i*20 + 315; })
 
   // enter
   var enter_rects = bars.enter()
     .append("g")
     .attr("class", "bar")
     .append("rect")
-    .attr("width", that.width/IPData.length - 3) 
-    .attr("height", function(d) { return that.height - that.yIP(d); })
-    .attr("x", function(d, i) { return (i * (that.width / IPData.length)); })
-    .attr("y", function(d) { return that.yIP(d); })
+    .attr("width", function(d) { return that.xIP(d); })
+    .attr("height", 10)
+    .attr("x", 0)
+    .attr("y", function(d, i) { return i*20 + 315; })
 
   // exit
   bars
     .exit()
     .remove()
-
-
-
 }
 
 PlayerVis.prototype.wrangleData = function(_filterFunction) {
