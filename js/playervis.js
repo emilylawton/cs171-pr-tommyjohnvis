@@ -8,7 +8,6 @@ PlayerVis = function(_parentElement, _data) {
 	this.parentElement = _parentElement;
 	this.data = _data; 
 
-
   // compute average recovery time & average post TJ IP
   totalMonths = 0; 
   recoveryCount = 0;
@@ -55,38 +54,6 @@ PlayerVis.prototype.initVis = function(){
   // create axis and scales
   this.xIP = d3.scale.linear()
     .range([0, this.width*.75]); 
-
-  // this.yIP = d3.scale.linear()
-  //   .range([0, 50]);
-
-  // this.xAxisIP = d3.svg.axis()
-  //   .scale(this.xIP)
-  //   .orient("bottom");
-
-  // this.yAxisIP = d3.svg.axis()
-  //   .scale(this.yIP)
-  //   .orient("left");
-
-  // add axes visual elements
-  // this.svg.append("g")
-  //   .attr("class", "x axis")
-  //   .attr("transform", "translate(0" + this.height + ")")
-  //   .selectAll("text")
-  //     .style("text-anchor", "end")
-  //     .attr("dy", "1em")
-  //     .attr("transform", function(d) {
-  //       return "rotate(-65)"
-  //     });
-
-  // this.svg.append("g")
-  //   .attr("class", "y axis")
-  //   // .attr("transform", "translate(0" + this.height + ")")
-  //   .append("text")
-  //     .attr("transform", "rotate(-90)")
-  //     .attr("y", 6)
-  //     .attr("dy", ".71em")
-  //     .style("text-anchor", "end")
-  //     .text("Post TJS IP compared to average");
 
   this.updateVis();
 }
@@ -143,8 +110,6 @@ PlayerVis.prototype.updateVis = function() {
       .text(function() {
         return that.displayData[0].player;
       });
-
-  // TODO: ABSTRACT
 
   // surgery date 
   this.svg.append("text")
@@ -214,8 +179,7 @@ PlayerVis.prototype.updateVis = function() {
     .attr("y", y)
     .attr("font-size", "10px")
     .text(function() {
-      y += 15; 
-      return "Post TJS IP compared to average: " + (that.displayData[0].post_ippa); 
+      return "Post TJS MLB IP compared to average: "; 
     });
 
   // compare post IP to average 
@@ -223,37 +187,7 @@ PlayerVis.prototype.updateVis = function() {
   var IPData = [this.averageIP, that.displayData[0].post_ippa];
   var max = d3.max(IPData);
   this.xIP.domain([0, max*1.5]); 
-  // this.yIP.domain(IPcats); 
-
-  // add axes visual elements
-  // this.svg.append("g")
-  //   .attr("class", "x axis")
-  //   .call(this.xAxisIP)
-  //   .attr("transform", "translate(0" + (this.height-100) + ")")
-  //   .selectAll("text")
-  //     .style("text-anchor", "end")
-  //     .attr("dx", "-.8em")
-  //     .attr("dy", ".15em")
-  //     .attr("transform", function(d) {
-  //       return "rotate(-65)"
-  //     });
-
-  // update axis 
-  // this.svg.select(".x.axis")
-  //   .call(this.xAxisIP)
-  //     .attr("transform", "translate(0," + (this.height-100) + ")")
-  //   .selectAll("text")
-  //     .style("text-anchor", "end")
-  //     .attr("dx", "-.8em")
-  //     .attr("dy", ".15em")
-  //       .attr("transform", function(d) {
-  //         return "rotate(-65)"
-  //     });
-
-  // this.svg.select(".y.axis")
-  //   .call(this.yAxisIP)
-  //     .attr("transform", "translate(0," + (this.height - 100) + ")"); 
-      
+ 
   // join
   var bars = this.svg.selectAll("g.bar")
     .data(IPData); 
@@ -261,13 +195,12 @@ PlayerVis.prototype.updateVis = function() {
   // update
   bars.select("rect")
     .transition()
-    .duration(500)
+    .duration(100)
     .attr("width", function(d) { return that.xIP(d); })
     .attr("height", 10)
     .attr("x", 0)
     .attr("y", function(d, i) { 
       y += 15; 
-      // return i*20 + 315; 
       return y; 
     })
     .attr("opacity", 0.2);
@@ -283,9 +216,16 @@ PlayerVis.prototype.updateVis = function() {
     .attr("y", function(d, i) { 
       y += 15; 
       return y; 
-      // return i*20 + 315; 
     })
-    .attr("opacity", 0.2);
+    .attr("opacity", 0.2) 
+
+  this.svg.append("text")
+    .attr("y", y)
+    .attr("font-size", "10px")
+    .text(function() {
+      return "Average"; 
+    });
+
 
   // exit
   bars
