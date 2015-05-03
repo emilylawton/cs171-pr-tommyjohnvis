@@ -34,7 +34,7 @@ PlayerVis = function(_parentElement, _data) {
 	// define svg constants  
 	this.margin = {top: 20, right: 0, bottom: 30, left: 0};
   	this.width = 300 - this.margin.left - this.margin.right;
-  	this.height = 600 - this.margin.top - this.margin.bottom;
+  	this.height = 500 - this.margin.top - this.margin.bottom;
 
   this.initVis();
 }
@@ -56,37 +56,37 @@ PlayerVis.prototype.initVis = function(){
   this.xIP = d3.scale.linear()
     .range([0, this.width*.75]); 
 
-  this.yIP = d3.scale.linear()
-    .range([0, 100]);
+  // this.yIP = d3.scale.linear()
+  //   .range([0, 50]);
 
-  this.xAxisIP = d3.svg.axis()
-    .scale(this.xIP)
-    .orient("bottom");
+  // this.xAxisIP = d3.svg.axis()
+  //   .scale(this.xIP)
+  //   .orient("bottom");
 
-  this.yAxisIP = d3.svg.axis()
-    .scale(this.yIP)
-    .orient("left");
+  // this.yAxisIP = d3.svg.axis()
+  //   .scale(this.yIP)
+  //   .orient("left");
 
   // add axes visual elements
-  this.svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0" + this.height + ")")
-    .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dy", "1em")
-      .attr("transform", function(d) {
-        return "rotate(-65)"
-      });
+  // this.svg.append("g")
+  //   .attr("class", "x axis")
+  //   .attr("transform", "translate(0" + this.height + ")")
+  //   .selectAll("text")
+  //     .style("text-anchor", "end")
+  //     .attr("dy", "1em")
+  //     .attr("transform", function(d) {
+  //       return "rotate(-65)"
+  //     });
 
-  this.svg.append("g")
-    .attr("class", "y axis")
-    // .attr("transform", "translate(0" + this.height + ")")
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Post TJS IP compared to average");
+  // this.svg.append("g")
+  //   .attr("class", "y axis")
+  //   // .attr("transform", "translate(0" + this.height + ")")
+  //   .append("text")
+  //     .attr("transform", "rotate(-90)")
+  //     .attr("y", 6)
+  //     .attr("dy", ".71em")
+  //     .style("text-anchor", "end")
+  //     .text("Post TJS IP compared to average");
 
   this.updateVis();
 }
@@ -108,7 +108,7 @@ PlayerVis.prototype.updateVis = function() {
     .attr("xlink:href", "img/players/" + this.displayData[0].mlbamid + ".jpg")
     .attr("width", this.width*.75)
     .attr("height", this.height*.75)
-    .attr("y", -75)
+    .attr("y", -50)
     .attr("id", "playerImage");
 
   // hide image not found icon
@@ -138,7 +138,7 @@ PlayerVis.prototype.updateVis = function() {
 
   // player name 
   this.svg.append("text")
-      .attr("y", 50)
+      .attr("y", 25)
       .attr("font-size", "30px")
       .text(function() {
         return that.displayData[0].player;
@@ -223,25 +223,37 @@ PlayerVis.prototype.updateVis = function() {
   var IPData = [this.averageIP, that.displayData[0].post_ippa];
   var max = d3.max(IPData);
   this.xIP.domain([0, max*1.5]); 
-  this.yIP.domain(IPcats); 
+  // this.yIP.domain(IPcats); 
+
+  // add axes visual elements
+  // this.svg.append("g")
+  //   .attr("class", "x axis")
+  //   .call(this.xAxisIP)
+  //   .attr("transform", "translate(0" + (this.height-100) + ")")
+  //   .selectAll("text")
+  //     .style("text-anchor", "end")
+  //     .attr("dx", "-.8em")
+  //     .attr("dy", ".15em")
+  //     .attr("transform", function(d) {
+  //       return "rotate(-65)"
+  //     });
 
   // update axis 
-  this.svg.select(".x.axis")
-    .call(this.xAxisIP)
-      .attr("transform", "translate(0," + (this.height - 200) + ")")
-    .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", ".15em")
-        .attr("transform", function(d) {
-          return "rotate(-65)"
-      });
+  // this.svg.select(".x.axis")
+  //   .call(this.xAxisIP)
+  //     .attr("transform", "translate(0," + (this.height-100) + ")")
+  //   .selectAll("text")
+  //     .style("text-anchor", "end")
+  //     .attr("dx", "-.8em")
+  //     .attr("dy", ".15em")
+  //       .attr("transform", function(d) {
+  //         return "rotate(-65)"
+  //     });
 
-  this.svg.select(".y.axis")
-    .call(this.yAxisIP)
-      .attr("transform", "translate(0," + (this.height - 200) + ")"); 
+  // this.svg.select(".y.axis")
+  //   .call(this.yAxisIP)
+  //     .attr("transform", "translate(0," + (this.height - 100) + ")"); 
       
-
   // join
   var bars = this.svg.selectAll("g.bar")
     .data(IPData); 
@@ -253,7 +265,12 @@ PlayerVis.prototype.updateVis = function() {
     .attr("width", function(d) { return that.xIP(d); })
     .attr("height", 10)
     .attr("x", 0)
-    .attr("y", function(d, i) { return i*20 + 315; })
+    .attr("y", function(d, i) { 
+      y += 15; 
+      // return i*20 + 315; 
+      return y; 
+    })
+    .attr("opacity", 0.2);
 
   // enter
   var enter_rects = bars.enter()
@@ -263,7 +280,12 @@ PlayerVis.prototype.updateVis = function() {
     .attr("width", function(d) { return that.xIP(d); })
     .attr("height", 10)
     .attr("x", 0)
-    .attr("y", function(d, i) { return i*20 + 315; })
+    .attr("y", function(d, i) { 
+      y += 15; 
+      return y; 
+      // return i*20 + 315; 
+    })
+    .attr("opacity", 0.2);
 
   // exit
   bars
