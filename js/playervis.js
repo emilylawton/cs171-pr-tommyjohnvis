@@ -7,13 +7,32 @@
 PlayerVis = function(_parentElement, _data) {
 	this.parentElement = _parentElement;
 	this.data = _data; 
+
+  // compute average recovery time & average post TJ IP
+  totalMonths = 0; 
+  recoveryCount = 0;
+  totalIP = 0; 
+  ipCount = 0; 
+  for (surgery of this.data) {
+    if (surgery.recovery) {
+      recoveryCount+=1;
+      totalMonths += surgery.recovery;
+    }
+    if (surgery.post_ippa) {
+      ipCount+=1; 
+      totalIP += surgery.post_ippa; 
+    }
+  }
+  this.averageRecovery = totalMonths / recoveryCount; 
+  this.averageIP = totalIP / ipCount;
+
 	// TODO - change to show default stats upon loading
 	this.displayData = [this.data[5]];
 
 	// define svg constants  
 	this.margin = {top: 20, right: 0, bottom: 30, left: 0};
   	this.width = 300 - this.margin.left - this.margin.right;
-  	this.height = 400 - this.margin.top - this.margin.bottom;
+  	this.height = 500 - this.margin.top - this.margin.bottom;
 
   this.initVis();
 }
@@ -31,36 +50,68 @@ PlayerVis.prototype.initVis = function(){
       .append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
+  // create axis and scales
+  this.x = d3.scale.linear()
+    .range([0, this.width*.5]); 
+
   this.updateVis();
 }
 
 PlayerVis.prototype.updateVis = function() {
 
   var that = this; 
+  error = false; 
+  var y = 215; 
 
   this.svg.select("image")
-    .remove()
+    .remove();
 
   this.svg.selectAll("text")
-    .remove()
+    .remove();
+
+  this.svg.selectAll("g")
+    .remove();
 
   // add player image 
   this.svg.append("image")
     .attr("xlink:href", "img/players/" + this.displayData[0].mlbamid + ".jpg")
-    .attr("width", this.width)
-    .attr("height", this.height);
-  
+    .attr("width", this.width*.75)
+    .attr("height", this.height*.75)
+    .attr("y", -50)
+    .attr("id", "playerImage");
+
+  // hide image not found icon
+  var img = document.getElementById("playerImage"); 
+  img.onerror = function () {
+    this.style.display = "none"; 
+    this.error = true; 
+    y = 100;
+
+    // that.svg.select("image").remove();
+    // console.log("BASEBALL IMAGE");
+    // that.svg.append("image")
+    //   .attr("xlink:href", "img/baseball.jpg")
+    //   .attr("width", this.width)
+    //   .attr("height", this.height)
+    //   .attr("id", "playerImage");
+  }
+
+  if (error) {
+    this.svg.select("image").remove();
+    this.svg.append("image")
+      .attr("xlink:href", "img/baseball.jpg")
+      .attr("width", this.width)
+      .attr("height", this.height)
+      .attr("id", "playerImage");
+  }
+
   // player name 
   this.svg.append("text")
-      .attr("y", 50)
+      .attr("y", 25)
       .attr("font-size", "30px")
       .text(function() {
         return that.displayData[0].player;
       });
-
-  var y = 300 
-
-  // TODO: ABSTRACT
 
   // surgery date 
   this.svg.append("text")
@@ -80,17 +131,6 @@ PlayerVis.prototype.updateVis = function() {
       .text(function() {
         y += 15; 
         return "Surgeon(s): " + that.displayData[0].surgeons; 
-      });
-  }
-
-  // recovery time 
-  if (that.displayData[0].recovery) {
-    this.svg.append("text")
-      .attr("y", y)
-      .attr("font-size", "10px")
-      .text(function() {
-        y += 15; 
-        return "Recovery Time: " + that.displayData[0].recovery + " months";
       });
   }
 
@@ -116,6 +156,109 @@ PlayerVis.prototype.updateVis = function() {
       });
   }
 
+  // active status 
+  this.svg.append("text")
+    .attr("y", y)
+    .attr("font-size", "10px")
+    .text(function() {
+      y += 15;
+      return (that.displayData[0].active) ? "Active" : "Not Active";
+    });
+
+  // temporary - post IP
+  this.svg.append("text")
+    .attr("y", y)
+    .attr("font-size", "10px")
+    .text(function() {
+      return "Post TJS MLB IP compared to average: " + that.displayData[0].post_ippa + " IP"; 
+    });
+
+  // compare post IP to average 
+  var IPcats = ["Average Post TJS MLB IP", that.displayData[0].player];
+  var IPData = [this.averageIP, that.displayData[0].post_ippa];
+  var max = d3.max(IPData);
+  this.x.domain([0, max*1.5]); 
+ 
+  var ip_g = this.svg.append("g")
+    .attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
+
+  var rows = ip_g
+    .selectAll("g.row")
+    .data(IPData)
+    .enter()
+      .append("g")
+      .attr("class", "row")
+
+  var names = rows
+    .append("text")
+    .attr("font-famiy", "sans-serif")
+    .attr("font-size", "10px")
+    .attr("x", function(d) { return that.x(d) + 5; })
+    .attr("y", function(d, i) {
+      return y + i*15; 
+    })
+    .text(function(d, i) {
+      return IPcats[i];
+    }); 
+
+  var bars = rows
+    .append("rect")
+    .attr("width", function(d) { return that.x(d); })
+    .attr("height", 12)
+    .attr("x", 0)
+    .attr("y", function(d, i) { 
+      return y + i * 15 - 10; 
+    })
+    .attr("opacity", 0.2)
+
+  // recovery time 
+  if (that.displayData[0].recovery) {
+    this.svg.append("text")
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 60; 
+        return "Recovery Time: " + that.displayData[0].recovery + " months";
+      })
+      .attr("y", y)
+  
+    // compare recovery time to average 
+    var recoveryCats = ["Average Recovery Time", that.displayData[0].player];
+    var recoveryData = [this.averageRecovery, that.displayData[0].recovery];
+    var max = d3.max(recoveryData);
+    this.x.domain([0, max*1.5]); 
+   
+    var recovery_g = this.svg.append("g")
+      .attr("transform", "translate("+that.margin.left+","+that.margin.top+")");
+
+    var rows = recovery_g
+      .selectAll("g.row")
+      .data(recoveryData)
+      .enter()
+        .append("g")
+        .attr("class", "row")
+
+    var names = rows
+      .append("text")
+      .attr("font-famiy", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("x", function(d) { return that.x(d) + 5; })
+      .attr("y", function(d, i) {
+        return y + i*15; 
+      })
+      .text(function(d, i) {
+        return recoveryCats[i];
+      }); 
+
+    var bars = rows
+      .append("rect")
+      .attr("width", function(d) { return that.x(d); })
+      .attr("height", 12)
+      .attr("x", 0)
+      .attr("y", function(d, i) { 
+        return y + i * 15 - 10; 
+      })
+      .attr("opacity", 0.2);
+  }
 }
 
 PlayerVis.prototype.wrangleData = function(_filterFunction) {
