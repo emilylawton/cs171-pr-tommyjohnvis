@@ -74,10 +74,10 @@ PlayerVis.prototype.updateVis = function() {
 
   // add player image 
   this.svg.append("image")
-    .attr("xlink:href", "img/players/" + this.displayData[0].mlbamid + ".jpg")
-    .attr("width", this.width*.75)
-    .attr("height", this.height*.75)
-    .attr("y", -50)
+    .attr("xlink:href", "img/players2/" + this.displayData[0].mlbamid + ".jpg")
+    .attr("width", 200)
+    .attr("height", 150)
+    .attr("y", 35)
     .attr("id", "playerImage");
 
   // hide image not found icon
@@ -86,14 +86,6 @@ PlayerVis.prototype.updateVis = function() {
     this.style.display = "none"; 
     this.error = true; 
     y = 100;
-
-    // that.svg.select("image").remove();
-    // console.log("BASEBALL IMAGE");
-    // that.svg.append("image")
-    //   .attr("xlink:href", "img/baseball.jpg")
-    //   .attr("width", this.width)
-    //   .attr("height", this.height)
-    //   .attr("id", "playerImage");
   }
 
   if (error) {
