@@ -72,7 +72,7 @@
         // global data variable
         allData = [];
         // convert strings to Date objects
-        var dateFormatter = d3.time.format("%m/%Y");
+        var dateFormatter = d3.time.format("%m/%d/%Y");
 
         // vis objects
         var countVis, playerVis;
@@ -138,7 +138,7 @@
               var surgeryInstance = {
                 majors: d["Majors"] == "Y" ? true : false,
                 post_games: parseInt(d["Post-TJ MLB G"]),
-                surg_date: dateFormatter.parse(surg_split[0] + "/" + surg_split[2]),
+                surg_date: dateFormatter.parse(surg_split[0] + "/" + surg_split[1] + "/" + surg_split[2]),
                 post_ippa: parseInt(d["Post-TJ MLB IP/PA"]),
                 mlbamid: parseInt(d["mlbamid"]),
                 country: d["Country"],
@@ -151,10 +151,13 @@
                 active: parseInt(d["Active"]) == 1 ? true : false,
                 position: d["Position"],
                 recovery: parseInt(d["Recovery Time (months)"]),
-                return_date: dateFormatter.parse(return_split[0] + "/" + return_split[2])
+                return_date: dateFormatter.parse(return_split[0] + "/" + return_split[2]),
+                throwing_arm: d["Throws"]
               }
               return surgeryInstance;
             });
+
+            console.log(allData[1]);
 
             initVis();
           }

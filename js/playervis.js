@@ -74,10 +74,10 @@ PlayerVis.prototype.updateVis = function() {
 
   // add player image 
   this.svg.append("image")
-    .attr("xlink:href", "img/players/" + this.displayData[0].mlbamid + ".jpg")
-    .attr("width", this.width*.75)
-    .attr("height", this.height*.75)
-    .attr("y", -50)
+    .attr("xlink:href", "img/players2/" + this.displayData[0].mlbamid + ".jpg")
+    .attr("width", 200)
+    .attr("height", 150)
+    .attr("y", 35)
     .attr("id", "playerImage");
 
   // hide image not found icon
@@ -86,14 +86,6 @@ PlayerVis.prototype.updateVis = function() {
     this.style.display = "none"; 
     this.error = true; 
     y = 100;
-
-    // that.svg.select("image").remove();
-    // console.log("BASEBALL IMAGE");
-    // that.svg.append("image")
-    //   .attr("xlink:href", "img/baseball.jpg")
-    //   .attr("width", this.width)
-    //   .attr("height", this.height)
-    //   .attr("id", "playerImage");
   }
 
   if (error) {
@@ -134,6 +126,17 @@ PlayerVis.prototype.updateVis = function() {
       });
   }
 
+  // age at time of surgery
+  if (that.displayData[0].age) {
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return "Age at time of surgery: " + that.displayData[0].age; 
+      });
+  }
+
   // team 
   if (that.displayData[0].team) {
     this.svg.append("text")
@@ -154,6 +157,17 @@ PlayerVis.prototype.updateVis = function() {
         y += 15; 
         return "Position: " + that.displayData[0].position;
       });
+  }
+
+  // throws
+  if (that.displayData[0].throwing_arm) {
+    this.svg.append("text")
+    .attr("y", y)
+    .attr("font-size", "10px")
+    .text(function() {
+      y += 15; 
+      return "Throws: " + that.displayData[0].throwing_arm; 
+    })
   }
 
   // active status 
