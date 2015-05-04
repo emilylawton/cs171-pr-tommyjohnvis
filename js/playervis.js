@@ -126,6 +126,17 @@ PlayerVis.prototype.updateVis = function() {
       });
   }
 
+  // age at time of surgery
+  if (that.displayData[0].age) {
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return "Age at time of surgery: " + that.displayData[0].age; 
+      });
+  }
+
   // team 
   if (that.displayData[0].team) {
     this.svg.append("text")
@@ -146,6 +157,17 @@ PlayerVis.prototype.updateVis = function() {
         y += 15; 
         return "Position: " + that.displayData[0].position;
       });
+  }
+
+  // throws
+  if (that.displayData[0].throwing_arm) {
+    this.svg.append("text")
+    .attr("y", y)
+    .attr("font-size", "10px")
+    .text(function() {
+      y += 15; 
+      return "Throws: " + that.displayData[0].throwing_arm; 
+    })
   }
 
   // active status 
