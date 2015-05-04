@@ -222,8 +222,14 @@
           // trigger event to change player profile
           $(MyEventHandler).trigger("selectionChanged", {"id": id});
 
-          var node = document.getElementById(id); 
-          console.log(node);         
+          // change style of node that represents the player the user searched for
+          var clickEvent = document.createEvent("SVGEvents");
+          clickEvent.initEvent("click",true,true);
+          var node = document.getElementById(id);
+          if (node) { 
+            // fire the event assigned to .on("click", ...)
+            node.dispatchEvent(clickEvent)
+          }      
         }
       }
 
