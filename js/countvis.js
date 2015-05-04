@@ -6,6 +6,8 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.graph = {nodes: [], links: []};
   this.hoverable = true;
   this.clickedId = 0;
+  this.clickedElement;
+  this.hoverPlayerName;
 
   // finding occurences
   this.occurences = {};
@@ -36,6 +38,14 @@ CountVis.prototype.initVis = function() {
       .attr("height", this.height + this.margin.top + this.margin.bottom)
     .append("g")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+  
+  this.hoverPlayerName = this.svg
+    .append("svg:text")
+      .attr("dx", 4)
+      .attr("dy", 25)
+      .attr("font-size", 35)
+      .attr("fill", "gray")
+      .text("");
 
   // create axis and scales
   this.x = d3.time.scale()
@@ -111,22 +121,45 @@ CountVis.prototype.updateVis = function() {
     .append("g")
     .attr("class", "node");
 
-  enter_nodes
+  this.node
     .append("circle")
     .on("mouseover", function(d) {
       if (that.hoverable) {
         $(that.eventHandler).trigger("selectionChanged", {"id": d.mlbamid});
       } 
+      that.hoverPlayerName.text(d.player);
+    })
+    .on("mouseout", function(d) {
+      that.hoverPlayerName.text("");
     })
     .on("click", function(d) {
       $(that.eventHandler).trigger("selectionChanged", {"id": d.mlbamid});
+      
+      // if hoverable, make not hoverable and fill cirlce red
       if (that.hoverable) {
-        that.hoverable = false;
         that.clickedId = d.mlbamid;
+        that.hoverable = false;
+        that.clickedElement = d3.select(this);
+        that.clickedElement.style("fill", "red");
       }
+      
+      // if already selected, deselect it
       else if (that.clickedId == d.mlbamid) {
+        that.clickedId = d.mlbamid;
         that.hoverable = true;
+        that.clickedElement = d3.select(this);
+        that.clickedElement.style("fill", "steelblue");
       }
+      
+      // make previously clicked circle blue, and new one red
+      else {
+        that.clickedId = d.mlbamid;
+        that.hoverable = false;
+        that.clickedElement.style("fill", "steelblue");
+        that.clickedElement = d3.select(this);
+        that.clickedElement.style("fill", "red");
+      }
+
     })
     .attr("r", 4);
 
