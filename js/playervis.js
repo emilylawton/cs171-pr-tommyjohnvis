@@ -216,7 +216,7 @@ PlayerVis.prototype.updateVis = function() {
       .attr("font-size", "10px")
       .text(function() {
         return "Throws: "; 
-      })
+      });
     
     this.svg.append("text")
       .attr("y", y)
@@ -225,7 +225,7 @@ PlayerVis.prototype.updateVis = function() {
       .text(function() {
         y += 15; 
         return that.displayData[0].throwing_arm; 
-      })
+      });
   }
 
   // active status 
@@ -242,30 +242,13 @@ PlayerVis.prototype.updateVis = function() {
       .attr("x", stats_x)
       .attr("font-size", "10px")
       .text(function() {
-        y += 15; 
         return (that.displayData[0].active) ? "Active" : "Not Active"; 
       })
-
-  // temporary - post IP
-  this.svg.append("text")
-    .attr("y", y)
-    .attr("font-size", "10px")
-    .attr("font-weight", "bold")
-    .text(function() {
-      return "Post TJS MLB IP compared to average: "; 
-    });
-
-  this.svg.append("text")
-    .attr("y", y)
-    .attr("x", stats_x + 75)
-    .attr("font-size", "10px")
-    .text(function() {
-      return that.displayData[0].post_ippa + " IP"; 
-    });
 
   // compare post IP to average 
   var IPcats = ["Average Post TJS MLB IP", that.displayData[0].player];
   var IPData = [this.averageIP, that.displayData[0].post_ippa];
+  console.log(that.displayData[0].post_ippa);
   var max = d3.max(IPData);
   this.x.domain([0, max*1.5]); 
  
@@ -282,6 +265,7 @@ PlayerVis.prototype.updateVis = function() {
   var names = rows
     .append("text")
     .attr("font-famiy", "sans-serif")
+    .attr("font-weight", "bold")
     .attr("font-size", "10px")
     .attr("x", function(d) { return that.x(d) + 5; })
     .attr("y", function(d, i) {
@@ -289,6 +273,18 @@ PlayerVis.prototype.updateVis = function() {
     })
     .text(function(d, i) {
       return IPcats[i];
+    }); 
+
+  var ip = rows
+    .append("text")
+    .attr("font-famiy", "sans-serif")
+    .attr("font-size", "10px")
+    .attr("x", function(d) { return that.x(d) - 20; })
+    .attr("y", function(d, i) {
+      return y + i*15; 
+    })
+    .text(function(d) {
+      return Math.round(d);
     }); 
 
   var bars = rows
@@ -300,30 +296,15 @@ PlayerVis.prototype.updateVis = function() {
       return y + i * 15 - 10; 
     })
     .attr("opacity", function(d, i) {
-      return (i == 0) ? .2 : .6;
+      return (i == 0) ? .2 : .4;
     });
 
   // recovery time 
   if (that.displayData[0].recovery) {
-    this.svg.append("text")
-      .attr("font-size", "10px")
-      .attr("font-weight", "bold")
-      .text(function() {
-        y += 60
-        return "Recovery Time: ";
-      })
-      .attr("y", y)
-
-    this.svg.append("text")
-      .attr("font-size", "10px")
-      .attr("x", stats_x)
-      .text(function() {
-        return that.displayData[0].recovery + " months";
-      })
-      .attr("y", y)
+    y += 50
   
     // compare recovery time to average 
-    var recoveryCats = ["Average Recovery Time", that.displayData[0].player];
+    var recoveryCats = ["Average Recovery Time (months)", that.displayData[0].player];
     var recoveryData = [this.averageRecovery, that.displayData[0].recovery];
     var max = d3.max(recoveryData);
     this.x.domain([0, max*1.5]); 
@@ -338,9 +319,22 @@ PlayerVis.prototype.updateVis = function() {
         .append("g")
         .attr("class", "row")
 
+    var months = rows
+      .append("text")
+      .attr("font-famiy", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("x", function(d) { return that.x(d) - 15; })
+      .attr("y", function(d, i) {
+        return y + i*15; 
+      })
+      .text(function(d, i) {
+        return Math.round(d);
+      })
+
     var names = rows
       .append("text")
       .attr("font-famiy", "sans-serif")
+      .attr("font-weight", "bold")
       .attr("font-size", "10px")
       .attr("x", function(d) { return that.x(d) + 5; })
       .attr("y", function(d, i) {
@@ -359,8 +353,8 @@ PlayerVis.prototype.updateVis = function() {
         return y + i * 15 - 10; 
       })
       .attr("opacity", function(d, i) {
-        return (i == 0) ? .2 : .6;
-      })
+        return (i == 0) ? .2 : .4;
+      });
   }
 }
 
