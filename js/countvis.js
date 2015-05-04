@@ -114,7 +114,8 @@ CountVis.prototype.updateVis = function() {
     .on("mouseover", function(d) {
       $(that.eventHandler).trigger("selectionChanged", {"id": d.mlbamid}); 
     })
-    .attr("r", 4);
+    .attr("r", 4)
+    .attr("id", function(d) { return d.mlbamid; });
 
   this.node.exit().remove();
 
