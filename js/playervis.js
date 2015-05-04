@@ -109,10 +109,22 @@ PlayerVis.prototype.updateVis = function() {
   this.svg.append("text")
     .attr("y", y)
     .attr("font-size", "10px")
+    .attr("font-weight", "bold")
+    .text(function() {
+      var date = that.displayData[0].surg_date; 
+      return "Surgery Date: ";
+    });
+
+  var stats_x = 100; 
+
+  this.svg.append("text")
+    .attr("y", y)
+    .attr("x", stats_x)
+    .attr("font-size", "10px")
     .text(function() {
       y += 15; 
       var date = that.displayData[0].surg_date; 
-      return "Surgery Date: " + (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
     });
 
   // surgeon(s) 
@@ -120,9 +132,18 @@ PlayerVis.prototype.updateVis = function() {
     this.svg.append("text")
       .attr("y", y) 
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
+      .text(function() {
+        return "Surgeon(s): "; 
+      });
+
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
       .text(function() {
         y += 15; 
-        return "Surgeon(s): " + that.displayData[0].surgeons; 
+        return that.displayData[0].surgeons; 
       });
   }
 
@@ -131,9 +152,18 @@ PlayerVis.prototype.updateVis = function() {
     this.svg.append("text")
       .attr("y", y) 
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
+      .text(function() {
+        return "Age at surgery time: "; 
+      });
+
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
       .text(function() {
         y += 15; 
-        return "Age at time of surgery: " + that.displayData[0].age; 
+        return that.displayData[0].age; 
       });
   }
 
@@ -142,10 +172,20 @@ PlayerVis.prototype.updateVis = function() {
     this.svg.append("text")
       .attr("y", y) 
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
+      .text(function() {
+        return "Team: ";
+      });
+
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
       .text(function() {
         y += 15; 
-        return "Team: " + that.displayData[0].team;
+        return that.displayData[0].team;
       });
+
   }
 
   // position 
@@ -153,38 +193,74 @@ PlayerVis.prototype.updateVis = function() {
     this.svg.append("text")
       .attr("y", y) 
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
       .text(function() {
-        y += 15; 
-        return "Position: " + that.displayData[0].position;
+        return "Position: ";
+      });
+
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15
+        return that.displayData[0].position;
       });
   }
 
   // throws
   if (that.displayData[0].throwing_arm) {
     this.svg.append("text")
-    .attr("y", y)
-    .attr("font-size", "10px")
-    .text(function() {
-      y += 15; 
-      return "Throws: " + that.displayData[0].throwing_arm; 
-    })
+      .attr("y", y)
+      .attr("font-weight", "bold")
+      .attr("font-size", "10px")
+      .text(function() {
+        return "Throws: "; 
+      })
+    
+    this.svg.append("text")
+      .attr("y", y)
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return that.displayData[0].throwing_arm; 
+      })
   }
 
   // active status 
   this.svg.append("text")
     .attr("y", y)
     .attr("font-size", "10px")
+    .attr("font-weight", "bold")
     .text(function() {
-      y += 15;
-      return (that.displayData[0].active) ? "Active" : "Not Active";
+      return "Status:";
     });
+
+  this.svg.append("text")
+    .attr("y", y)
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return (that.displayData[0].active) ? "Active" : "Not Active"; 
+      })
 
   // temporary - post IP
   this.svg.append("text")
     .attr("y", y)
     .attr("font-size", "10px")
+    .attr("font-weight", "bold")
     .text(function() {
-      return "Post TJS MLB IP compared to average: " + that.displayData[0].post_ippa + " IP"; 
+      return "Post TJS MLB IP compared to average: "; 
+    });
+
+  this.svg.append("text")
+    .attr("y", y)
+    .attr("x", stats_x + 75)
+    .attr("font-size", "10px")
+    .text(function() {
+      return that.displayData[0].post_ippa + " IP"; 
     });
 
   // compare post IP to average 
@@ -223,15 +299,26 @@ PlayerVis.prototype.updateVis = function() {
     .attr("y", function(d, i) { 
       return y + i * 15 - 10; 
     })
-    .attr("opacity", 0.2)
+    .attr("opacity", function(d, i) {
+      return (i == 0) ? .2 : .6;
+    });
 
   // recovery time 
   if (that.displayData[0].recovery) {
     this.svg.append("text")
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
       .text(function() {
-        y += 60; 
-        return "Recovery Time: " + that.displayData[0].recovery + " months";
+        y += 60
+        return "Recovery Time: ";
+      })
+      .attr("y", y)
+
+    this.svg.append("text")
+      .attr("font-size", "10px")
+      .attr("x", stats_x)
+      .text(function() {
+        return that.displayData[0].recovery + " months";
       })
       .attr("y", y)
   
@@ -271,7 +358,9 @@ PlayerVis.prototype.updateVis = function() {
       .attr("y", function(d, i) { 
         return y + i * 15 - 10; 
       })
-      .attr("opacity", 0.2);
+      .attr("opacity", function(d, i) {
+        return (i == 0) ? .2 : .6;
+      })
   }
 }
 

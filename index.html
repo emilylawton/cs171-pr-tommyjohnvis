@@ -157,8 +157,6 @@
               return surgeryInstance;
             });
 
-            console.log(allData[1]);
-
             initVis();
           }
         }
@@ -224,7 +222,8 @@
           // trigger event to change player profile
           $(MyEventHandler).trigger("selectionChanged", {"id": id});
 
-          // TODO: highlight surgery instances in countvis
+          var node = document.getElementById(id); 
+          console.log(node);         
         }
       }
 
