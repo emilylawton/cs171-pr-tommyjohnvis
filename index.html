@@ -201,8 +201,20 @@
             " - " + $("#ageSlider").slider("values",1));
         }
 
+        var formatPitchingData = function(error, _pitchingData) {
+          if (!error) {
+            for (d of allData) {
+              if (d["player"] in _pitchingData) {
+                d.pitching_data = _pitchingData[d["player"]]
+              }
+              else d.pitching_data = []
+            }
+          }
+        }
+
         var formatData = function(error, _allData) {
           if (!error) {
+  
             allData = _allData.map(function (d) {
               surg_split = d["TJ Surgery Date"].split("/");
               return_split = d["Return Date (same level)"].split("/");
@@ -211,7 +223,7 @@
                 majors: d["Majors"] == "Y" ? true : false,
                 post_games: parseInt(d["Post-TJ MLB G"]),
                 surg_date: dateFormatter.parse(surg_split[0] + "/" + surg_split[1] + "/" + surg_split[2]),
-                post_ippa: parseInt(d["Post-TJ MLB IP/PA"]),
+                post_ippa: parseInt(d["Post-TJ MLB IP/PA"].replace(/,/g, '')),
                 mlbamid: parseInt(d["mlbamid"]),
                 country: d["Country"],
                 age: parseInt(d["Age"]),
@@ -229,7 +241,15 @@
               return surgeryInstance;
             });
 
-            console.log(allData[1]);
+            var loadPitchingData = function() {
+              queue()
+                .defer(d3.json, "data/pitchingData.json")
+                .await(formatPitchingData);
+            }
+
+            loadPitchingData();
+
+            console.log(allData);
 
             initVis();
           }
@@ -312,10 +332,17 @@
 
           var id = p[0]["mlbamid"];
 
-          // trigger event to change player profile
+          // trigger event to change player profile 
           $(MyEventHandler).trigger("selectionChanged", {"id": id});
 
-          // TODO: highlight surgery instances in countvis
+          // change style of node that represents the player the user searched for
+          var clickEvent = document.createEvent("SVGEvents");
+          clickEvent.initEvent("click",true,true);
+          var node = document.getElementById(id);
+          if (node) { 
+            // fire the event assigned to .on("click", ...)
+            node.dispatchEvent(clickEvent)
+          }      
         }
       }
 

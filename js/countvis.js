@@ -218,7 +218,8 @@ CountVis.prototype.updateVis = function() {
       }
 
     })
-    .attr("r", 4);
+    .attr("r", 4)
+    .attr("id", function(d) { return d.mlbamid; });
 
   this.node.exit().remove();
 

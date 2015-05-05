@@ -12,19 +12,27 @@ PlayerVis = function(_parentElement, _data) {
   totalMonths = 0; 
   recoveryCount = 0;
   totalIP = 0; 
+  totalPA = 0; 
   ipCount = 0; 
+  paCount = 0; 
   for (surgery of this.data) {
     if (surgery.recovery) {
       recoveryCount+=1;
       totalMonths += surgery.recovery;
     }
     if (surgery.post_ippa) {
-      ipCount+=1; 
-      totalIP += surgery.post_ippa; 
+      if (surgery.position == "P") {
+        ipCount += 1;
+        totalIP += surgery.post_ippa; 
+      } else {
+        paCount += 1; 
+        totalPA += surgery.post_ippa; 
+      }
     }
   }
   this.averageRecovery = totalMonths / recoveryCount; 
   this.averageIP = totalIP / ipCount;
+  this.averagePA = totalPA / paCount; 
 
 	// TODO - change to show default stats upon loading
 	this.displayData = [this.data[5]];
@@ -109,10 +117,22 @@ PlayerVis.prototype.updateVis = function() {
   this.svg.append("text")
     .attr("y", y)
     .attr("font-size", "10px")
+    .attr("font-weight", "bold")
+    .text(function() {
+      var date = that.displayData[0].surg_date; 
+      return "Surgery Date: ";
+    });
+
+  var stats_x = 100; 
+
+  this.svg.append("text")
+    .attr("y", y)
+    .attr("x", stats_x)
+    .attr("font-size", "10px")
     .text(function() {
       y += 15; 
       var date = that.displayData[0].surg_date; 
-      return "Surgery Date: " + (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
+      return (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
     });
 
   // surgeon(s) 
@@ -120,9 +140,18 @@ PlayerVis.prototype.updateVis = function() {
     this.svg.append("text")
       .attr("y", y) 
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
+      .text(function() {
+        return "Surgeon(s): "; 
+      });
+
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
       .text(function() {
         y += 15; 
-        return "Surgeon(s): " + that.displayData[0].surgeons; 
+        return that.displayData[0].surgeons; 
       });
   }
 
@@ -131,9 +160,18 @@ PlayerVis.prototype.updateVis = function() {
     this.svg.append("text")
       .attr("y", y) 
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
+      .text(function() {
+        return "Age at surgery time: "; 
+      });
+
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
       .text(function() {
         y += 15; 
-        return "Age at time of surgery: " + that.displayData[0].age; 
+        return that.displayData[0].age; 
       });
   }
 
@@ -142,10 +180,20 @@ PlayerVis.prototype.updateVis = function() {
     this.svg.append("text")
       .attr("y", y) 
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
+      .text(function() {
+        return "Team: ";
+      });
+
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
       .text(function() {
         y += 15; 
-        return "Team: " + that.displayData[0].team;
+        return that.displayData[0].team;
       });
+
   }
 
   // position 
@@ -153,44 +201,75 @@ PlayerVis.prototype.updateVis = function() {
     this.svg.append("text")
       .attr("y", y) 
       .attr("font-size", "10px")
+      .attr("font-weight", "bold")
       .text(function() {
-        y += 15; 
-        return "Position: " + that.displayData[0].position;
+        return "Position: ";
+      });
+
+    this.svg.append("text")
+      .attr("y", y) 
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15
+        return that.displayData[0].position;
       });
   }
 
   // throws
   if (that.displayData[0].throwing_arm) {
     this.svg.append("text")
-    .attr("y", y)
-    .attr("font-size", "10px")
-    .text(function() {
-      y += 15; 
-      return "Throws: " + that.displayData[0].throwing_arm; 
-    })
+      .attr("y", y)
+      .attr("font-weight", "bold")
+      .attr("font-size", "10px")
+      .text(function() {
+        return "Throws: "; 
+      });
+    
+    this.svg.append("text")
+      .attr("y", y)
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
+      .text(function() {
+        y += 15; 
+        return that.displayData[0].throwing_arm; 
+      });
   }
 
   // active status 
   this.svg.append("text")
     .attr("y", y)
     .attr("font-size", "10px")
+    .attr("font-weight", "bold")
     .text(function() {
-      y += 15;
-      return (that.displayData[0].active) ? "Active" : "Not Active";
+      return "Status:";
     });
 
-  // temporary - post IP
   this.svg.append("text")
     .attr("y", y)
-    .attr("font-size", "10px")
-    .text(function() {
-      return "Post TJS MLB IP compared to average: " + that.displayData[0].post_ippa + " IP"; 
-    });
+      .attr("x", stats_x)
+      .attr("font-size", "10px")
+      .text(function() {
+        return (that.displayData[0].active) ? "Active" : "Not Active"; 
+      })
 
   // compare post IP to average 
-  var IPcats = ["Average Post TJS MLB IP", that.displayData[0].player];
-  var IPData = [this.averageIP, that.displayData[0].post_ippa];
-  var max = d3.max(IPData);
+  // var IPcats = ["Average Post TJS MLB IP", that.displayData[0].player];
+  // var IPData = [this.averageIP, that.displayData[0].post_ippa];
+  // var PAcats = ["Average Post TJS MLB PA", that.displayData[0].player];
+  // var PAData = [this.averagePA, that.displayData[0].post_ippa];
+
+
+  if (that.displayData[0].position == "P") {
+    var IPPAcats = ["Average Post TJS MLB IP", that.displayData[0].player];
+    var IPPAData = [this.averageIP, that.displayData[0].post_ippa];    
+    var max = d3.max(IPPAData);
+  } else {
+    var IPPAcats = ["Average Post TJS MLB PA", that.displayData[0].player];
+    var IPPAData = [this.averagePA, that.displayData[0].post_ippa];
+    var max = d3.max(IPPAData);
+  }
+
   this.x.domain([0, max*1.5]); 
  
   var ip_g = this.svg.append("g")
@@ -198,23 +277,39 @@ PlayerVis.prototype.updateVis = function() {
 
   var rows = ip_g
     .selectAll("g.row")
-    .data(IPData)
+    .data(IPPAData)
     .enter()
       .append("g")
       .attr("class", "row")
 
+  // actual values of IP/PA data 
   var names = rows
     .append("text")
     .attr("font-famiy", "sans-serif")
+    .attr("font-weight", "bold")
     .attr("font-size", "10px")
     .attr("x", function(d) { return that.x(d) + 5; })
     .attr("y", function(d, i) {
       return y + i*15; 
     })
     .text(function(d, i) {
-      return IPcats[i];
+      return IPPAcats[i];
     }); 
 
+  // IP/PA labels 
+  var ip = rows
+    .append("text")
+    .attr("font-famiy", "sans-serif")
+    .attr("font-size", "10px")
+    .attr("x", function(d) { return that.x(d) - 20; })
+    .attr("y", function(d, i) {
+      return y + i*15; 
+    })
+    .text(function(d) {
+      return Math.round(d);
+    }); 
+
+  // IP/PA bars 
   var bars = rows
     .append("rect")
     .attr("width", function(d) { return that.x(d); })
@@ -223,20 +318,16 @@ PlayerVis.prototype.updateVis = function() {
     .attr("y", function(d, i) { 
       return y + i * 15 - 10; 
     })
-    .attr("opacity", 0.2)
+    .attr("opacity", function(d, i) {
+      return (i == 0) ? .2 : .4;
+    });
 
   // recovery time 
   if (that.displayData[0].recovery) {
-    this.svg.append("text")
-      .attr("font-size", "10px")
-      .text(function() {
-        y += 60; 
-        return "Recovery Time: " + that.displayData[0].recovery + " months";
-      })
-      .attr("y", y)
+    y += 50
   
     // compare recovery time to average 
-    var recoveryCats = ["Average Recovery Time", that.displayData[0].player];
+    var recoveryCats = ["Average Recovery Time (months)", that.displayData[0].player];
     var recoveryData = [this.averageRecovery, that.displayData[0].recovery];
     var max = d3.max(recoveryData);
     this.x.domain([0, max*1.5]); 
@@ -251,9 +342,22 @@ PlayerVis.prototype.updateVis = function() {
         .append("g")
         .attr("class", "row")
 
+    var months = rows
+      .append("text")
+      .attr("font-famiy", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("x", function(d) { return that.x(d) - 15; })
+      .attr("y", function(d, i) {
+        return y + i*15; 
+      })
+      .text(function(d, i) {
+        return Math.round(d);
+      })
+
     var names = rows
       .append("text")
       .attr("font-famiy", "sans-serif")
+      .attr("font-weight", "bold")
       .attr("font-size", "10px")
       .attr("x", function(d) { return that.x(d) + 5; })
       .attr("y", function(d, i) {
@@ -271,7 +375,9 @@ PlayerVis.prototype.updateVis = function() {
       .attr("y", function(d, i) { 
         return y + i * 15 - 10; 
       })
-      .attr("opacity", 0.2);
+      .attr("opacity", function(d, i) {
+        return (i == 0) ? .2 : .4;
+      });
   }
 }
 
