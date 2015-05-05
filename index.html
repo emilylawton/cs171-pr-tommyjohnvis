@@ -149,85 +149,110 @@
         <input type="text" id="searchPlayer" onkeypress="searchForPlayer(event)" placeholder="Enter player name...">
       </div>
     </div>
+    <br>
+    <br>
+    <br>
 
     <div id="analysis">
-      Primary analysis: Performance based (use of player card) <br>
-      Secondary analysis: Overall trends (ages, recovery times, team specific, trends)
-      <div id="statsAnalysis" class="analysis">
-        <h3 class="header">Player Analysis</h3>
-        There is much speculation in the baseball world that Tommy John surgery actually aids pitchers. Some people now view it as partially an enhancement procedure instead of simply a reparative one. Our visualization does not support this claim. For pitchers that are able to record significant innings post surgery, their post surgery stats are anywhere from far worse to far better than pre surgery. The outcome seems to just depend on the individual. 
-        </br>On the other hand, for pitchers who are not able to record significant innings following the surgery, the procedure has most likely had a negative impact on their pitching ability. Tommy John surgery is rarely undertaken unless the athlete is trying to continue playing baseball. Therefore, when a pitcher is not able to play much after surgery, we can deem the surgery and rehab process a failure.
-        </br>We picked out 6 pitchers that managed to play for a while after their surgery to show how varied the results of the surgeries are. The metrics we used to quantify their success were Earned Run Average (ERA) which is how many earned runs a pitcher allows per 9 innings, and strikeouts per inning  (K/IP) which is a good measure of how electric a pitcher is (something that would only be high if a pitcher's arm is in good shape).
-        </br></br>Scott Erickson and Jorge De La Rosa are two good examples of pitchers that were able to continue to play post surgery, but were never able to return to their peak performance:
-      </div>
-      <div class="playerPics">
-        <figure class="row1">
-          <img id="erickson" src="/img/charts/erickson.png"></img>
-          <figcaption><h4>Scott Erickson</h4></figcaption>
-        </figure>
-        <figure class="row1">
-          <img id="deLaRosa" src="/img/charts/deLaRosa.png"></img>
-          <figcaption><h4>Jorge De La Rosa</h4></figcaption>
-        </figure>
-      </div>
-      <div class="analysis">
-        All of Erickson's ERAs following the surgery are higher than his before the surgery. Additionally his strikeouts per inning declines substantially post procedure. Similarly the year after De La Rosa's surgery he has his worst ERA and strikeouts per inning in the last 10 years.
-        </br></br>Tim Hudson and Jake Westbrook both have very similar numbers pre and post surgery:
-      </div>
-      <div class="playerPics">
-        <figure class="row2">
-          <img id="hudson" src="/img/charts/hudson.png"></img>
-          <figcaption><h4>Tim Hudson</h4></figcaption>
-        </figure>
-        <figure class="row2">
-          <img id="westbrook" src="/img/charts/westbrook.png"></img>
-          <figcaption><h4>Jake Westbrook</h4></figcaption>
-        </figure>
-      </div>
-      <div class="analysis">
-        Excluding one particularly bad year for Hudson's ERA in 2006, he has pretty consistent ERA and K/IP 2003-2014 with his surgery right in the middle in 2008.  Similarly, Westbrook has almost the exact same numbers from 2003-2013 with his surgery in 2008. Both pitchers seem to have had their arms repaired by the surgery, but did not significantly gain pitching ability from the procedure.
-        </br></br>Finally, Carl Pavano and Neal Cotts both seem to have benefitted from the surgery, at least temporarily:
-      </div>
-      <div class="playerPics">
-        <figure class="row3">
-          <img id="pavano" src="/img/charts/pavano.png"></img>
-          <figcaption><h4>Carl Pavano</h4></figcaption>
-        </figure>
-        <figure class="row3">
-          <img id="cotts" src="/img/charts/cotts.png"></img>
-          <figcaption><h4>Neal Cotts</h4></figcaption>
-        </figure>
-      </div>
-      <div class="analysis">
-        We see Pavano's K/IP numbers steadily declining until he gets the surgery and they spike back up. Cott's ERA is steadily increasing until he gets the procedure then it drops. In both cases the numbers appear to return to pre-surgery levels after a few years but the immediate results of the surgeries is enhanced pitching ability. 
-      </br></div>
-      <div id="recovAnalysis" class="analysis">
-        <h3 class="header">Recovery Time Analysis</h3></br>
-        The factor that most directly affects the recovery time of an athlete undergoing Tommy John surgery is undoubtedly the quality of the procedure However, this is a much less variable factor since the teams of the athletes that we are studying have had millions of dollars invested in them, thus we can assume they are getting the best medical care possible. The risk of a top surgeon botching a Tommy John surgery is pretty low.
-        </br>The next most impactful factor on the recovery time of an athlete is most likely the rahabilitation program that he is following. It is fair to think that if multiple top athletes are following the same tried and true rehab protocol, the majority of them will recover in similar amounts of time. The information displayed in our vizualization quite aptly depicts the development of the rehabilitaiton programs followed by athletes undergoing Tommy John surgery.
-      </div>
-      <div id="recovPics">
-        <figure class="row4">
-          <img id="1975" src="/img/charts/1975.png"></img>
-          <figcaption><h4>1974-1989</h4></figcaption>
-        </figure>
-        <figure class="row4">
-          <img id="1990" src="/img/charts/1990.png"></img>
-          <figcaption><h4>1990-1999</h4></figcaption>
-        </figure>
-        <figure class="row5">
-          <img id="2000" src="/img/charts/2000.png"></img>
-          <figcaption><h4>2000-2009</h4></figcaption>
-        </figure>
-        <figure class="row5">
-          <img id="2010" src="/img/charts/2010.png"></img>
-          <figcaption><h4>2010-Present</h4></figcaption>
-        </figure>
-      </div>
-      <div class="analysis">
-        </br>Over time, the average recovery time stays relatively constant at around 16 months. However what does change drastically is the spread of the distribution of recovery times. The distribution tightens up dramatically as time goes on, indicating to us that the rehab programs followed by athletes become more uniform and successful over time. The prevalence of outliers on the long end (indicative of athletes that did not rehab properly, suffering set backs in their journey back to baseball) and on the short end (indicative of athletes that are trying to rush to get back to playing form) drops severely over time. 
+      <br>
+      <div class="row">
+        <div id="statsAnalysis" class="analysis col-md-8 col-md-offset-2">
+          <h3 class="header">Player Analysis</h3>
+          There is much speculation in the baseball world that Tommy John surgery actually aids pitchers. Some people now view it as partially an enhancement procedure instead of simply a reparative one. Our visualization does not support this claim. For pitchers that are able to record significant innings post surgery, their post surgery stats are anywhere from far worse to far better than pre surgery. The outcome seems to just depend on the individual. 
+          </br>On the other hand, for pitchers who are not able to record significant innings following the surgery, the procedure has most likely had a negative impact on their pitching ability. Tommy John surgery is rarely undertaken unless the athlete is trying to continue playing baseball. Therefore, when a pitcher is not able to play much after surgery, we can deem the surgery and rehab process a failure.
+          </br>We picked out 6 pitchers that managed to play for a while after their surgery to show how varied the results of the surgeries are. The metrics we used to quantify their success were Earned Run Average (ERA) which is how many earned runs a pitcher allows per 9 innings, and strikeouts per inning  (K/IP) which is a good measure of how electric a pitcher is (something that would only be high if a pitcher's arm is in good shape).
+          </br></br>Scott Erickson and Jorge De La Rosa are two good examples of pitchers that were able to continue to play post surgery, but were never able to return to their peak performance:
+        </div>
+        <div class="playerPics" class="row">
+          <div class="col-md-4 col-md-offset-2">
+            <img id="erickson" src="/img/charts/erickson.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">Scott Erickson</h4></figcaption>
+          </div>
+          <div class="col-md-4">
+            <img id="deLaRosa" src="/img/charts/deLaRosa.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">Jorge De La Rosa</h4></figcaption>
+          </div>
+        </div>
+        <br>
+        <br>
+        <div class="row">
+          <div class="analysis col-md-8 col-md-offset-2">
+            All of Erickson's ERAs following the surgery are higher than his before the surgery. Additionally his strikeouts per inning declines substantially post procedure. Similarly the year after De La Rosa's surgery he has his worst ERA and strikeouts per inning in the last 10 years.
+            </br></br>Tim Hudson and Jake Westbrook both have very similar numbers pre and post surgery:
+          </div>
+        </div>
+        <div class="playerPics" class="row">
+          <div class="col-md-4 col-md-offset-2">
+            <img id="hudson" src="/img/charts/hudson.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">Tim Hudson</h4></figcaption>
+          </div>
+          <div class="col-md-4">
+            <img id="westbrook" src="/img/charts/westbrook.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">Jake Westbrook</h4></figcaption>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="analysis col-md-8 col-md-offset-2">
+            Excluding one particularly bad year for Hudson's ERA in 2006, he has pretty consistent ERA and K/IP 2003-2014 with his surgery right in the middle in 2008.  Similarly, Westbrook has almost the exact same numbers from 2003-2013 with his surgery in 2008. Both pitchers seem to have had their arms repaired by the surgery, but did not significantly gain pitching ability from the procedure.
+            </br></br>Finally, Carl Pavano and Neal Cotts both seem to have benefitted from the surgery, at least temporarily:
+          </div>
+        </div>
+        <div class="playerPics" class="row">
+          <div class="col-md-4 col-md-offset-2">
+            <img id="pavano" src="/img/charts/pavano.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">Carl Pavano</h4></figcaption>
+          </div>
+          <div class="col-md-4">
+            <img id="cotts" src="/img/charts/cotts.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">Neal Cotts</h4></figcaption>
+          </div>
+        </div>
+        <div class="row">
+          <div class="analysis col-md-8 col-md-offset-2">
+            We see Pavano's K/IP numbers steadily declining until he gets the surgery and they spike back up. Cott's ERA is steadily increasing until he gets the procedure then it drops. In both cases the numbers appear to return to pre-surgery levels after a few years but the immediate results of the surgeries is enhanced pitching ability. 
+          </div>
+        </div>
+        <div class="row">
+          <div class="analysis col-md-8 col-md-offset-2">
+            <br>
+            <br>
+            <h3 class="header">Recovery Time Analysis</h3>
+            The factor that most directly affects the recovery time of an athlete undergoing Tommy John surgery is undoubtedly the quality of the procedure However, this is a much less variable factor since the teams of the athletes that we are studying have had millions of dollars invested in them, thus we can assume they are getting the best medical care possible. The risk of a top surgeon botching a Tommy John surgery is pretty low.
+            </br>The next most impactful factor on the recovery time of an athlete is most likely the rahabilitation program that he is following. It is fair to think that if multiple top athletes are following the same tried and true rehab protocol, the majority of them will recover in similar amounts of time. The information displayed in our vizualization quite aptly depicts the development of the rehabilitaiton programs followed by athletes undergoing Tommy John surgery.
+          </div>
+        </div>
+        <br>
+        <div class="playerPics" class="row">
+          <div class="col-md-4 col-md-offset-2">
+            <img id="1975" src="/img/charts/1975.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">1974-1989</h4></figcaption>
+          </div>
+          <div class="col-md-4">
+            <img id="1990" src="/img/charts/1990.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">1990-1999</h4></figcaption>
+          </div>
+        </div>
+        <div class="playerPics" class="row">
+          <div class="col-md-4 col-md-offset-2">
+            <img id="2000" src="/img/charts/2000.png"height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">2000-2009</h4></figcaption>
+          </div>
+          <div class="col-md-4">
+            <img id="2010" src="/img/charts/2010.png" height="200" width="250"></img>
+            <figcaption><h4 style="margin-left:60px">2010-Present</h4></figcaption>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="analysis col-md-8 col-md-offset-2">
+            Over time, the average recovery time stays relatively constant at around 16 months. However what does change drastically is the spread of the distribution of recovery times. The distribution tightens up dramatically as time goes on, indicating to us that the rehab programs followed by athletes become more uniform and successful over time. The prevalence of outliers on the long end (indicative of athletes that did not rehab properly, suffering set backs in their journey back to baseball) and on the short end (indicative of athletes that are trying to rush to get back to playing form) drops severely over time. 
+          </div>
+        </div>
       </div>
     </div>
+    <br>
+    <br>
 
     <script>
 

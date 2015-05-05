@@ -65,44 +65,6 @@ body{
 
 .analysis {
   margin-right:115px; 
+  font-size: 18px;
 }
 
-#1990 {
-  float: left;
-  position:absolute;
-  display:inline;
-}
-
-.row1 {
-  float:left;
-  width:45%;
-  display:inline-block;
-}
-
-.row2 {
-  width:45%;
-  display:inline-block;
-}
-
-.row3 {
-  width:45%;
-  display:inline-block;
-}
-
-.row4 {
-  width:45%;
-  display:inline-block;
-}
-
-.row5 {
-  width:45%;
-  display:inline-block;
-}
-
-.header {
-  text-align: center;
-}
-
-figure figcaption {
-  text-align:center;
-}
