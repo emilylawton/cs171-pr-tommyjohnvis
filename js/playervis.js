@@ -386,7 +386,9 @@ PlayerVis.prototype.updateVis = function() {
     // gather era data for selected player
     var data = []
     for (year of that.displayData[0].pitching_data) {
-      data.push({"year": parseInt(year["year"].replace(/,/g, '')), "era": parseFloat(year["data"]["ERA"])});
+      if (year["data"]["ERA"]) {
+        data.push({"year": parseInt(year["year"].replace(/,/g, '')), "era": parseFloat(year["data"]["ERA"])});
+      }
     }
 
     var h = 100;
@@ -458,8 +460,14 @@ PlayerVis.prototype.updateVis = function() {
     data = []
     years = []
     for (year of that.displayData[0].pitching_data) {
-      data.push({"year": parseInt(year["year"].replace(/,/g, '')), "soData": parseFloat(year["data"]["SO"]/parseFloat(year["data"]["IP"]))});
-      years.push(parseInt(year["year"].replace(/,/g, '')));
+      if (year["data"]["SO"] && year["data"]["IP"]) {
+        data.push({"year": parseInt(year["year"].replace(/,/g, '')), "soData": parseFloat(year["data"]["SO"]/parseFloat(year["data"]["IP"]))});
+        years.push(parseInt(year["year"].replace(/,/g, '')));
+      }
+    }
+
+    if (that.displayData[0].player == "Scott Williamson") {
+      console.log(data);
     }
 
     var xAxisSO = d3.svg.axis()
@@ -469,15 +477,15 @@ PlayerVis.prototype.updateVis = function() {
       .scale(yscale)
       .orient("left")
 
+    xscale.domain(d3.extent(data, function(d) { return d.year; }));
+    yscale.domain(d3.extent(data, function(d) { return d.soData; }));
+
     var line = d3.svg.line()
       .x(function(d) { return xscale(d.year); })
       .y(function(d) { return yscale(d.soData); });
 
     var svgSO = this.svg.append("g")
       .attr("transform", "translate("+that.margin.left+","+(that.margin.top+300)+")");
-
-    xscale.domain(d3.extent(data, function(d) { return d.year; }));
-    yscale.domain(d3.extent(data, function(d) { return d.soData; }));
 
     // SO/IP label
     svg.append("text")
