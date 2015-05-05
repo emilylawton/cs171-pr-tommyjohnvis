@@ -34,3 +34,22 @@ body{
 #ageRange {
   border: 1px solid transparent;
 }
+
+.smallFont {
+  font-size: small;
+}
+
+#viewingArea {
+  border-style: solid;
+  border-width: 1px;
+  border-color: steelblue;
+  margin-left: 20px;
+  margin-bottom:3px;
+}
+
+#filteringArea {
+  border-style: solid;
+  border-width: 1px;
+  border-color: steelblue;
+  margin-left: 20px;
+}

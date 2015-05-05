@@ -9,6 +9,8 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.playerCount;
   this.clickedElement;
   this.hoverPlayerName;
+  this.bz = "brushing";
+  this.zoomer;
 
   // finding occurences
   this.occurences = {};
@@ -16,7 +18,7 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.maxOccurence = 0;
 
   // define svg constants
-  this.margin = {top: 20, right: 20, bottom: 30, left: 80};
+  this.margin = {top: 20, right: 20, bottom: 30, left: 25};
   this.width = 700 - this.margin.left - this.margin.right;
   this.height = 400 - this.margin.top - this.margin.bottom;
 
@@ -33,13 +35,22 @@ CountVis.prototype.initVis = function() {
 
   var that = this;
 
+  this.zoomer = d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", this.zoom);
+
   // constructs SVG layout
-  this.svg = this.parentElement.append("svg")
+  var svg = this.parentElement.append("svg")
       .attr("width", this.width + this.margin.left + this.margin.right)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
     .append("g")
       .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
+      .call(this.zoomer);
   
+  this.zoom = function() {
+    svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+  } 
+
+  this.svg = svg;
+
   this.playerCount = this.svg
     .append("svg:text")
       .attr("dx", 4)
@@ -71,16 +82,6 @@ CountVis.prototype.initVis = function() {
     .scale(this.y)
     .orient("left");
 
-
-  // create brush 
-  this.brush = d3.svg.brush()
-    .on("brush", function() {
-        $(that.eventHandler).trigger("brushChanged", {"start": that.brush.extent()[0], "end": that.brush.extent()[1]});
-    });
-
-  this.svg.append("g")
-    .attr("class", "brush");
-
   // add axes visual elemnents
   this.svg.append("g")
       .attr("class", "x axis")
@@ -93,6 +94,13 @@ CountVis.prototype.initVis = function() {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
+
+  // create brush 
+  this.brush = d3.svg.brush()
+    .on("brush", function() {
+        console.log("brusheddd");
+        $(that.eventHandler).trigger("brushChanged", {"start": that.brush.extent()[0], "end": that.brush.extent()[1]});
+    });
 
   this.updateVis();
 
@@ -188,11 +196,40 @@ CountVis.prototype.updateVis = function() {
       that.occurences[d.surg_date]--;
     });
 
-  this.brush.x(this.x);
-  this.svg.select(".brush")
-    .call(this.brush)
-    .selectAll("rect")
-    .attr("height", this.height);
+  if (this.bz == "brushing") {
+    // deactivate zoomer
+    this.zoomer.on('zoom', null);
+
+    // create brush 
+    this.brush = d3.svg.brush()
+      .on("brush", function() {
+          console.log("brusheddd");
+          $(that.eventHandler).trigger("brushChanged", {"start": that.brush.extent()[0], "end": that.brush.extent()[1]});
+      });
+
+    // add brush
+    this.svg.append("g")
+      .attr("class", "brush");
+
+    this.brush.x(this.x);
+    this.svg.select(".brush")
+      .call(this.brush)
+      .selectAll("rect")
+      .attr("height", this.height);
+  }
+  else {
+    // activate zoomer
+    this.zoomer.on('zoom', this.zoom);
+
+    // deactivate brush
+    this.brush
+      .on('brush', null)
+      .on('brushstart', null)
+      .on('brushend', null);
+
+    // remove brush element
+    d3.select('.brush').remove();
+  }
 
   this.graphUpdate(200);
 
@@ -221,6 +258,9 @@ CountVis.prototype.userChange = function(settings) {
 
   //filter by position
   this.filterPosition(settings["position"]);
+
+  // set brushing or zooming
+  this.bz = settings["bz"];
 
   // update display
   this.updateVis();
