@@ -248,7 +248,6 @@ PlayerVis.prototype.updateVis = function() {
   // compare post IP to average 
   var IPcats = ["Average Post TJS MLB IP", that.displayData[0].player];
   var IPData = [this.averageIP, that.displayData[0].post_ippa];
-  console.log(that.displayData[0].post_ippa);
   var max = d3.max(IPData);
   this.x.domain([0, max*1.5]); 
  
@@ -286,6 +285,8 @@ PlayerVis.prototype.updateVis = function() {
     .text(function(d) {
       return Math.round(d);
     }); 
+
+  // TODO: FIGURE OUT WHY POST_IPPA > 1000 AREN'T GETTING PROCESSED CORRECTLY 
 
   var bars = rows
     .append("rect")

@@ -131,6 +131,7 @@
 
         var formatData = function(error, _allData) {
           if (!error) {
+  
             allData = _allData.map(function (d) {
               surg_split = d["TJ Surgery Date"].split("/");
               return_split = d["Return Date (same level)"].split("/");
@@ -139,7 +140,7 @@
                 majors: d["Majors"] == "Y" ? true : false,
                 post_games: parseInt(d["Post-TJ MLB G"]),
                 surg_date: dateFormatter.parse(surg_split[0] + "/" + surg_split[1] + "/" + surg_split[2]),
-                post_ippa: parseInt(d["Post-TJ MLB IP/PA"]),
+                post_ippa: parseInt(d["Post-TJ MLB IP/PA"].replace(/,/g, '')),
                 mlbamid: parseInt(d["mlbamid"]),
                 country: d["Country"],
                 age: parseInt(d["Age"]),
