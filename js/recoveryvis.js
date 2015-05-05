@@ -176,7 +176,7 @@ RecoveryVis.prototype.filterAndAggregate = function(_filter) {
   var filtered_data = that.data.filter(filter); 
 
 	// create an array of values for recovery times
-	var res = d3.range(this.maxRecovery).map(function () {
+	var res = d3.range(this.maxRecovery + 1).map(function () {
 		return 0;
 	});
 

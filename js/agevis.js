@@ -78,7 +78,6 @@ AgeVis.prototype.updateVis = function() {
   this.x.domain([0,this.maxAge]);
   this.y.domain([0, max]); 
 
-  console.log(this.displayData);
   // update axis
   this.svg.select(".x.axis")
     .call(this.xAxis)
@@ -177,7 +176,7 @@ AgeVis.prototype.filterAndAggregate = function(_filter) {
   var filtered_data = that.data.filter(filter); 
 
   // create an array of values for age
-  var res = d3.range(this.maxAge).map(function () {
+  var res = d3.range(this.maxAge + 1).map(function () {
     return 0;
   });
 
