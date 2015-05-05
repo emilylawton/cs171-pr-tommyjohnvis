@@ -12,6 +12,16 @@ circle:hover {
   fill: red;
 }
 
+.line {
+  fill: none; 
+  stroke: black;
+  stroke-width: 1px;
+}
+
+/*.x.axis path {
+  display: none; 
+}*/
+
 body{
 	font-family: 'PT Sans', sans-serif;
 }

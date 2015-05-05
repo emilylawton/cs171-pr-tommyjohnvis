@@ -40,7 +40,7 @@ PlayerVis = function(_parentElement, _data) {
 	// define svg constants  
 	this.margin = {top: 20, right: 0, bottom: 30, left: 0};
   	this.width = 300 - this.margin.left - this.margin.right;
-  	this.height = 500 - this.margin.top - this.margin.bottom;
+  	this.height = 700 - this.margin.top - this.margin.bottom;
 
   this.initVis();
 }
@@ -56,7 +56,7 @@ PlayerVis.prototype.initVis = function(){
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
       .append("g")
-        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+        .attr("transform", "translate(" + this.margin.left + "," + (this.margin.top) + ")");
 
   // create axis and scales
   this.x = d3.scale.linear()
@@ -70,6 +70,9 @@ PlayerVis.prototype.updateVis = function() {
   var that = this; 
   error = false; 
   var y = 215; 
+
+  this.svg.selectAll("svg")
+    .remove();
 
   this.svg.select("image")
     .remove();
@@ -254,12 +257,6 @@ PlayerVis.prototype.updateVis = function() {
       })
 
   // compare post IP to average 
-  // var IPcats = ["Average Post TJS MLB IP", that.displayData[0].player];
-  // var IPData = [this.averageIP, that.displayData[0].post_ippa];
-  // var PAcats = ["Average Post TJS MLB PA", that.displayData[0].player];
-  // var PAData = [this.averagePA, that.displayData[0].post_ippa];
-
-
   if (that.displayData[0].position == "P") {
     var IPPAcats = ["Average Post TJS MLB IP", that.displayData[0].player];
     var IPPAData = [this.averageIP, that.displayData[0].post_ippa];    
@@ -378,6 +375,72 @@ PlayerVis.prototype.updateVis = function() {
       .attr("opacity", function(d, i) {
         return (i == 0) ? .2 : .4;
       });
+  }
+
+  y += 50;
+
+  // line chart showing era over time 
+  if (that.displayData[0].pitching_data) {
+
+    var parseDate = d3.time.format("%y").parse;
+
+    var data = []
+    for (year of that.displayData[0].pitching_data) {
+      data.push({"year": parseInt(year["year"].replace(/,/g, '')), "era": parseFloat(year["data"]["ERA"])});
+    }
+    console.log(data);
+
+    // var x = d3.time.scale()
+    //   .range([0, this.width*.75]);
+
+    var xscale = d3.scale.linear()
+      .range([0, this.width*.75])
+
+    var yscale = d3.scale.linear()
+      .range([150, 0])
+
+    var xAxis = d3.svg.axis()
+      .scale(xscale)
+      .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+      .scale(yscale)
+      .orient("left")
+
+    var line = d3.svg.line()
+      .x(function(d) { return xscale(d.year); })
+      .y(function(d) { return yscale(d.era); }); 
+
+    var svg = this.svg.append("g")
+      .attr("transform", "translate("+that.margin.left+","+(that.margin.top + y) +")")
+
+    xscale.domain(d3.extent(data, function(d) { return d.year; }));
+    yscale.domain(d3.extent(data, function(d) { return d.era; }));
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + 150 + ")")
+      .call(xAxis)
+      .append("text")
+        .attr("x", this.width*.75 / 2) 
+        .attr("y", 27)
+        .style("text-anchor", "middle")
+        .text("Year")
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .attr("text-anchor", "end")
+        .text("Pitching Performance");
+
+    svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
   }
 }
 

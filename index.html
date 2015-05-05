@@ -43,96 +43,97 @@
         <a href="#analysis"><h2>Our Analysis</h2></a>
     </div>
 
-    <!-- Viewing Options -->
-    <div class="row" id="vis">
-      <div class="col-md-7" id="viewingArea">
-        <div class="row">
-          <div class="col-md-5">
-            <b>Viewing Options:</b>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-5">
-            Group Surgeries:
-            <input type="radio" name="grouping" value="year" checked>by Year</input>
-            <input type="radio" name="grouping" value="month">by Month</input>
-          </div>
-          <div class="col-md-5"> 
-            Enable:
-            <input type="radio" name="bz" value="brushing" checked>brushing</input>
-            <input type="radio" name="bz" value="zooming">zoooming</input>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Filtering Options -->
     <div class="row">
-      <div class="col-md-7" id="filteringArea">
-        <div class="row">
-          <div class="col-md-5">
-            <b>Filtering Options:</b>
+      <div class="col-md-7">
+        <!-- Viewing Options -->
+        <div class="row" id="vis">
+          <div class="col-md-12" id="viewingArea">
+            <div class="row">
+              <div class="col-md-8">
+                <b>Viewing Options:</b>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                Group Surgeries:
+                <input type="radio" name="grouping" value="year" checked>by Year</input>
+                <input type="radio" name="grouping" value="month">by Month</input>
+              </div>
+              <div class="col-md-6"> 
+                Enable:
+                <input type="radio" name="bz" value="brushing" checked>brushing</input>
+                <input type="radio" name="bz" value="zooming">zoooming</input>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-md-3">
-              Ages:
-              <input type="text" size="6" id="ageRange" readonly>
-             <div id="ageSlider" style="margin-bottom:5px"></div>
-          </div>
-          <div class="col-md-3">
-            by Team: 
-            <select name="teamDropDown">
-              <option value="ALL">ALL</option>
-              <option value="ARI">ARI</option>
-              <option value="ATL">ATL</option>
-              <option value="BAL">BAL</option>
-              <option value="BOS">BOS</option>
-              <option value="CHC">CHC</option>
-              <option value="CHW">CHW</option>
-              <option value="CIN">CIN</option>
-              <option value="CLE">CLE</option>
-              <option value="COL">COL</option>
-              <option value="DET">DET</option>
-              <option value="MIA">MIA</option>
-              <option value="HOU">HOU</option>
-              <option value="KC">KC</option>
-              <option value="LAA">LAA</option>
-              <option value="LAD">LAD</option>
-              <option value="MIL">MIL</option>
-              <option value="MIN">MIN</option>
-              <option value="NYM">NYM</option>
-              <option value="NYY">NYY</option>
-              <option value="OAK">OAK</option>
-              <option value="PHI">PHI</option>
-              <option value="PIT">PIT</option>
-              <option value="SD">SD</option>
-              <option value="SF">SF</option>
-              <option value="SEA">SEA</option>
-              <option value="STL">STL</option>
-              <option value="TB">TB</option>
-              <option value="TEX">TEX</option>
-              <option value="TOR">TOR</option>
-              <option value="WAS">WAS</option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            by Position:
-            <select name="positionDropDown">
-              <option value="ALL">ALL</option>
-              <option value="PITCHERS">PITCHERS</option>
-              <option value="POSITION">POSITION</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Views -->
-    <div class="row">
-      <div class="col-md-9" id="countVis">
+        <!-- Filtering Options -->
+        <div class="row">
+          <div class="col-md-12" id="filteringArea">
+            <div class="row">
+              <div class="col-md-8">
+                <b>Filtering Options:</b>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-5">
+                  Ages:
+                  <input type="text" size="6" id="ageRange" readonly>
+                 <div id="ageSlider" style="margin-bottom:5px"></div>
+              </div>
+              <div class="col-md-3">
+                by Team: 
+                <select name="teamDropDown">
+                  <option value="ALL">ALL</option>
+                  <option value="ARI">ARI</option>
+                  <option value="ATL">ATL</option>
+                  <option value="BAL">BAL</option>
+                  <option value="BOS">BOS</option>
+                  <option value="CHC">CHC</option>
+                  <option value="CHW">CHW</option>
+                  <option value="CIN">CIN</option>
+                  <option value="CLE">CLE</option>
+                  <option value="COL">COL</option>
+                  <option value="DET">DET</option>
+                  <option value="MIA">MIA</option>
+                  <option value="HOU">HOU</option>
+                  <option value="KC">KC</option>
+                  <option value="LAA">LAA</option>
+                  <option value="LAD">LAD</option>
+                  <option value="MIL">MIL</option>
+                  <option value="MIN">MIN</option>
+                  <option value="NYM">NYM</option>
+                  <option value="NYY">NYY</option>
+                  <option value="OAK">OAK</option>
+                  <option value="PHI">PHI</option>
+                  <option value="PIT">PIT</option>
+                  <option value="SD">SD</option>
+                  <option value="SF">SF</option>
+                  <option value="SEA">SEA</option>
+                  <option value="STL">STL</option>
+                  <option value="TB">TB</option>
+                  <option value="TEX">TEX</option>
+                  <option value="TOR">TOR</option>
+                  <option value="WAS">WAS</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                by Position:
+                <select name="positionDropDown">
+                  <option value="ALL">ALL</option>
+                  <option value="PITCHERS">PITCHERS</option>
+                  <option value="POSITION">POSITION</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7" id="countVis"></div>
+        </div>
       </div>
-      <div class="col-md-3" id="playerVis">
+      <div class="col-md-3 col-md-offset-2" id="playerVis">
         <input type="text" id="searchPlayer" onkeypress="searchForPlayer(event)" placeholder="Enter player name...">
       </div>
     </div>
