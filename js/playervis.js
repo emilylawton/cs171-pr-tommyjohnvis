@@ -388,7 +388,6 @@ PlayerVis.prototype.updateVis = function() {
     for (year of that.displayData[0].pitching_data) {
       data.push({"year": parseInt(year["year"].replace(/,/g, '')), "era": parseFloat(year["data"]["ERA"])});
     }
-    console.log(data);
 
     var h = 100;
 
@@ -511,7 +510,7 @@ PlayerVis.prototype.updateVis = function() {
         .attr("x1", xscale(date))
         .attr("x2", xscale(date));
     }
-    
+
   }
 }
 
