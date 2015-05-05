@@ -129,6 +129,17 @@
             " - " + $("#ageSlider").slider("values",1));
         }
 
+        var formatPitchingData = function(error, _pitchingData) {
+          if (!error) {
+            for (d of allData) {
+              if (d["player"] in _pitchingData) {
+                d.pitching_data = _pitchingData[d["player"]]
+              }
+              else d.pitching_data = []
+            }
+          }
+        }
+
         var formatData = function(error, _allData) {
           if (!error) {
   
@@ -157,6 +168,16 @@
               }
               return surgeryInstance;
             });
+
+            var loadPitchingData = function() {
+              queue()
+                .defer(d3.json, "data/pitchingData.json")
+                .await(formatPitchingData);
+            }
+
+            loadPitchingData();
+
+            console.log(allData);
 
             initVis();
           }
