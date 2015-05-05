@@ -62,3 +62,47 @@ body{
   border-color: steelblue;
   margin-left: 20px;
 }
+
+.analysis {
+  margin-right:115px; 
+}
+
+#1990 {
+  float: left;
+  position:absolute;
+  display:inline;
+}
+
+.row1 {
+  float:left;
+  width:45%;
+  display:inline-block;
+}
+
+.row2 {
+  width:45%;
+  display:inline-block;
+}
+
+.row3 {
+  width:45%;
+  display:inline-block;
+}
+
+.row4 {
+  width:45%;
+  display:inline-block;
+}
+
+.row5 {
+  width:45%;
+  display:inline-block;
+}
+
+.header {
+  text-align: center;
+}
+
+figure figcaption {
+  text-align:center;
+}

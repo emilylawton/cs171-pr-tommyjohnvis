@@ -12,7 +12,7 @@ RecoveryVis = function(_parentElement, _data) {
 	this.numberBins = this.maxRecovery - this.minRecovery + 1; 
 
 	// define svg constants 
-	this.margin = {top: 20, right: 0, bottom: 30, left: 20};
+	this.margin = {top: 20, right: 0, bottom: 30, left: 25};
 	this.width = 300 - this.margin.left - this.margin.right; 
 	this.height = 300 - this.margin.top - this.margin.bottom; 
 
