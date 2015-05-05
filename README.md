@@ -13,9 +13,10 @@ All of the svg visualizations have seperate files in the /js folder.
 
 countvis.js
   - main visualization
+  - a distribution of surgeries across time
   - represents a player's surgery as a node (cirlce)
-  - creates a distribution across time
-  - players are clickable
+  - hovering over circles, changes the playervis visualization
+  - if cirle is clicked, the playervis locks on that specific player
   - area is zoomable and brushable, but not simultaneously
 
 playervis.js
