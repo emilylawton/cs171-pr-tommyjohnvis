@@ -40,7 +40,7 @@ PlayerVis = function(_parentElement, _data) {
 	// define svg constants  
 	this.margin = {top: 20, right: 0, bottom: 30, left: 0};
   	this.width = 300 - this.margin.left - this.margin.right;
-  	this.height = 700 - this.margin.top - this.margin.bottom;
+  	this.height = 600 - this.margin.top - this.margin.bottom;
 
   this.initVis();
 }
@@ -379,11 +379,11 @@ PlayerVis.prototype.updateVis = function() {
 
   y += 50;
 
-  // line chart showing era over time 
-  if (that.displayData[0].pitching_data) {
+  // line chart showing era + SO/IP over time if information
+  // is available for more than one year
+  if (that.displayData[0].pitching_data && that.displayData[0].pitching_data.length > 1) {
 
-    var parseDate = d3.time.format("%y").parse;
-
+    // gather era data for selected player
     var data = []
     for (year of that.displayData[0].pitching_data) {
       data.push({"year": parseInt(year["year"].replace(/,/g, '')), "era": parseFloat(year["data"]["ERA"])});
@@ -392,6 +392,7 @@ PlayerVis.prototype.updateVis = function() {
 
     var h = 100;
 
+    // create axis and scales
     var xscale = d3.scale.linear()
       .range([0, this.width*.75])
 
@@ -414,9 +415,18 @@ PlayerVis.prototype.updateVis = function() {
     var svg = this.svg.append("g")
       .attr("transform", "translate("+that.margin.left+","+(that.margin.top + y) +")")
 
+    // line graph title 
+    svg.append("text")
+      .attr("class", "title")
+      .attr("x", this.width*.75/2)
+      .attr("y", -5)
+      .style("text-anchor", "middle")
+      .text("ERA + SO/IP");
+
     xscale.domain(d3.extent(data, function(d) { return d.year; }));
     yscale.domain(d3.extent(data, function(d) { return d.era; }));
 
+    // add axes visual elements
     svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + h + ")")
@@ -436,14 +446,59 @@ PlayerVis.prototype.updateVis = function() {
     svg.append("g")
       .attr("class", "y axis")
       .call(yAxis)
-      .append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .attr("text-anchor", "end")
-        .text("ERA");
 
+    // era label
+    svg.append("text")
+      .attr("transform", "translate(" + (0) + "," + yscale(data[0].era) + ")")
+      .attr("dy", ".35em")
+      .attr("text-anchor", "start")
+      .attr("font-size", "10px")
+      .style("fill", "black")
+      .text("ERA");
+
+    // era line
     svg.append("path")
+    .attr("stroke", "black")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+    // gather SO/IP data for selected player
+    data = []
+    for (year of that.displayData[0].pitching_data) {
+      data.push({"year": parseInt(year["year"].replace(/,/g, '')), "soData": parseFloat(year["data"]["SO"]/parseFloat(year["data"]["IP"]))});
+    }
+    console.log(data);
+
+    var xAxisSO = d3.svg.axis()
+      .scale(xscale)
+      .orient("bottom")
+    var yAxisSO = d3.svg.axis()
+      .scale(yscale)
+      .orient("left")
+
+    var line = d3.svg.line()
+      .x(function(d) { return xscale(d.year); })
+      .y(function(d) { return yscale(d.soData); });
+
+    var svgSO = this.svg.append("g")
+      .attr("transform", "translate("+that.margin.left+","+(that.margin.top+300)+")");
+
+    xscale.domain(d3.extent(data, function(d) { return d.year; }));
+    yscale.domain(d3.extent(data, function(d) { return d.soData; }));
+
+    // SO/IP label
+    svg.append("text")
+      .attr("transform", "translate(" + (0) + "," + yscale(data[0].soData) + ")")
+      .attr("dy", ".35em")
+      .attr("font-size", "10px")
+      .attr("text-anchor", "start")
+      .style("fill", "red")
+      .text("SO/IP");
+
+    // SO/IP line
+    svg.append("path")
+      .attr("stroke", "red")
       .datum(data)
       .attr("class", "line")
       .attr("d", line);
