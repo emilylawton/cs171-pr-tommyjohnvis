@@ -232,7 +232,7 @@ CountVis.prototype.updateVis = function() {
       that.occurences[d.surg_date]--;
     });
 
-  this.graphUpdate(200);
+  this.graphUpdate(0);
 
 }
 
