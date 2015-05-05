@@ -415,14 +415,6 @@ PlayerVis.prototype.updateVis = function() {
     var svg = this.svg.append("g")
       .attr("transform", "translate("+that.margin.left+","+(that.margin.top + y) +")")
 
-    // line graph title 
-    svg.append("text")
-      .attr("class", "title")
-      .attr("x", this.width*.75/2)
-      .attr("y", -5)
-      .style("text-anchor", "middle")
-      .text("ERA + SO/IP");
-
     xscale.domain(d3.extent(data, function(d) { return d.year; }));
     yscale.domain(d3.extent(data, function(d) { return d.era; }));
 
@@ -465,10 +457,11 @@ PlayerVis.prototype.updateVis = function() {
 
     // gather SO/IP data for selected player
     data = []
+    years = []
     for (year of that.displayData[0].pitching_data) {
       data.push({"year": parseInt(year["year"].replace(/,/g, '')), "soData": parseFloat(year["data"]["SO"]/parseFloat(year["data"]["IP"]))});
+      years.push(parseInt(year["year"].replace(/,/g, '')));
     }
-    console.log(data);
 
     var xAxisSO = d3.svg.axis()
       .scale(xscale)
@@ -493,15 +486,32 @@ PlayerVis.prototype.updateVis = function() {
       .attr("dy", ".35em")
       .attr("font-size", "10px")
       .attr("text-anchor", "start")
-      .style("fill", "red")
+      .style("fill", "blue")
       .text("SO/IP");
 
     // SO/IP line
     svg.append("path")
-      .attr("stroke", "red")
+      .attr("stroke", "blue")
       .datum(data)
       .attr("class", "line")
       .attr("d", line);
+
+
+    // TODO: CHECK IF TJS DATE IS WITHIN RANGE OF D.YEARS
+    date = that.displayData[0].surg_date.getFullYear();
+    l = years.length;
+    if (date >= years[0] && date <= years[l-1]) {
+
+      // TJS date line 
+      svg.append("line")
+        .attr("stroke", "red")
+        .attr("stroke-weight", "bold")
+        .attr("y1", h)
+        .attr("y2", 0)
+        .attr("x1", xscale(date))
+        .attr("x2", xscale(date));
+    }
+    
   }
 }
 
