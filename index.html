@@ -21,6 +21,8 @@
   <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
   <!-- Own Stylesheet -->
   <link rel="stylesheet" type="text/css" href="css/myStyle.css">
+  <!-- JQuery UI stylesheet -->
+  <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
 
   <!-- Vis Classes -->
   <script src="js/countvis.js"></script>
@@ -41,11 +43,59 @@
         <label><input type="radio" name="grouping" value="year" checked>by Year</label>
       </form>
     </div>
-    <div>
-      <p>
-        <label for="ageRange">Ages:</label>
-        <input type="text" id="ageRange" readonly>
-      <div class="col-md-5" id="ageSlider"></div>
+    <div id="filterArea">
+      <div class="row">
+        <div class="col-md-2">
+          <label for="ageRange">Ages:</label>
+          <input type="text" size="7" id="ageRange" readonly>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3"id="ageSlider"></div>
+      </div>
+      <div class="row">
+        by Team: 
+        <select name="teamDropDown">
+          <option value="ALL">ALL</option>
+          <option value="ARI">ARI</option>
+          <option value="ATL">ATL</option>
+          <option value="BAL">BAL</option>
+          <option value="BOS">BOS</option>
+          <option value="CHC">CHC</option>
+          <option value="CHW">CHW</option>
+          <option value="CIN">CIN</option>
+          <option value="CLE">CLE</option>
+          <option value="COL">COL</option>
+          <option value="DET">DET</option>
+          <option value="MIA">MIA</option>
+          <option value="HOU">HOU</option>
+          <option value="KC">KC</option>
+          <option value="LAA">LAA</option>
+          <option value="LAD">LAD</option>
+          <option value="MIL">MIL</option>
+          <option value="MIN">MIN</option>
+          <option value="NYM">NYM</option>
+          <option value="NYY">NYY</option>
+          <option value="OAK">OAK</option>
+          <option value="PHI">PHI</option>
+          <option value="PIT">PIT</option>
+          <option value="SD">SD</option>
+          <option value="SF">SF</option>
+          <option value="SEA">SEA</option>
+          <option value="STL">STL</option>
+          <option value="TB">TB</option>
+          <option value="TEX">TEX</option>
+          <option value="TOR">TOR</option>
+          <option value="WAS">WAS</option>
+        </select>
+      </div>
+      <div class="row">
+        by Position:
+        <select name="positionDropDown">
+          <option value="ALL">ALL</option>
+          <option value="PITCHERS">PITCHERS</option>
+          <option value="POSITION">POSITION</option>
+        </select>
     </div>
 
     <div class="row">
@@ -177,6 +227,13 @@
           countVis.userChange(displaySettings());
         });
 
+        d3.selectAll("select[name=\"teamDropDown\"]").on("change", function() {
+          countVis.userChange(displaySettings());
+        });
+
+        d3.selectAll("select[name=\"positionDropDown\"]").on("change", function() {
+          countVis.userChange(displaySettings());
+        })
         // find player matches as user types in search box 
         function substringMatcher(strs) {
           return function findMatches(q, cb) {
@@ -232,8 +289,10 @@
       // ages is min and max value of the slider
       function displaySettings() {
         var g = document.querySelector('input[name="grouping"]:checked').value;
-        var a = [$("#ageSlider").slider("values",0), $("#ageSlider").slider("values",1)]; 
-        return {grouping: g, ages: a}
+        var a = [$("#ageSlider").slider("values",0), $("#ageSlider").slider("values",1)];
+        var t = document.querySelector('select[name="teamDropDown"]').value;
+        var p = document.querySelector('select[name="positionDropDown"]').value;
+        return {grouping: g, ages: a, team: t, position: p};
       }
   </script>
 </body>

@@ -6,6 +6,7 @@ CountVis = function(_parentElement, _data, _eventHandler) {
   this.graph = {nodes: [], links: []};
   this.hoverable = true;
   this.clickedId = 0;
+  this.playerCount;
   this.clickedElement;
   this.hoverPlayerName;
 
@@ -37,12 +38,20 @@ CountVis.prototype.initVis = function() {
       .attr("width", this.width + this.margin.left + this.margin.right)
       .attr("height", this.height + this.margin.top + this.margin.bottom)
     .append("g")
-      .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+      .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")")
   
+  this.playerCount = this.svg
+    .append("svg:text")
+      .attr("dx", 4)
+      .attr("dy", 10)
+      .attr("font-size", 10)
+      .attr("fill", "gray")
+      .text("");
+
   this.hoverPlayerName = this.svg
     .append("svg:text")
       .attr("dx", 4)
-      .attr("dy", 25)
+      .attr("dy", 38)
       .attr("font-size", 35)
       .attr("fill", "gray")
       .text("");
@@ -61,6 +70,7 @@ CountVis.prototype.initVis = function() {
   this.yAxis = d3.svg.axis()
     .scale(this.y)
     .orient("left");
+
 
   // create brush 
   this.brush = d3.svg.brush()
@@ -111,6 +121,9 @@ CountVis.prototype.updateVis = function() {
 
   this.svg.select(".y.axis")
     .call(this.yAxis);
+
+  // update player count
+  this.playerCount.text("Total Players: " + this.graph.nodes.length);
 
   // join
   this.node = this.svg.selectAll(".node")
@@ -203,6 +216,12 @@ CountVis.prototype.userChange = function(settings) {
   // filter by the selected ages
   this.filterAge(settings["ages"][0], settings["ages"][1]);
 
+  // filter by team
+  this.filterTeam(settings["team"]);
+
+  //filter by position
+  this.filterPosition(settings["position"]);
+
   // update display
   this.updateVis();
 }
@@ -290,6 +309,28 @@ CountVis.prototype.filterAge = function(min, max) {
   }); 
 }
 
+// filter this.graph.nodes by given team
+CountVis.prototype.filterTeam = function(team) {
+  if (team != "ALL") {
+    this.graph.nodes = this.graph.nodes.filter(function(d) {
+      return team == d.team;
+    });
+  }
+}
+
+// filter this.graph.nodes by given position
+CountVis.prototype.filterPosition = function(position) {
+  if (position == "PITCHERS") {
+    this.graph.nodes = this.graph.nodes.filter(function(d) {
+      return d.position == "P";
+    });
+  }
+  else if (position == "POSITION") {
+    this.graph.nodes = this.graph.nodes.filter(function(d) {
+      return d.position != "P";
+    });
+  }
+}
 // data is already grouped by year, only change if year
 CountVis.prototype.changeGrouping = function(grouping) {
   if (grouping == "year") {

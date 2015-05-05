@@ -24,3 +24,13 @@ body{
     fill-opacity: .5;
     pointer-events: none;
 }
+
+.ui-slider {
+    color: steelblue;
+    font-size: 1em;
+    background-color: #5d82be;
+}
+
+#ageRange {
+  border: 1px solid transparent;
+}
