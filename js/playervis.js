@@ -466,10 +466,6 @@ PlayerVis.prototype.updateVis = function() {
       }
     }
 
-    if (that.displayData[0].player == "Scott Williamson") {
-      console.log(data);
-    }
-
     var xAxisSO = d3.svg.axis()
       .scale(xscale)
       .orient("bottom")
@@ -488,13 +484,18 @@ PlayerVis.prototype.updateVis = function() {
       .attr("transform", "translate("+that.margin.left+","+(that.margin.top+300)+")");
 
     // SO/IP label
-    svg.append("text")
-      .attr("transform", "translate(" + (0) + "," + yscale(data[0].soData) + ")")
-      .attr("dy", ".35em")
-      .attr("font-size", "10px")
-      .attr("text-anchor", "start")
-      .style("fill", "blue")
-      .text("SO/IP");
+    if (data.length >= 1) {
+      if ("soData" in data[0]) {
+        svg.append("text")
+          .attr("transform", "translate(" + (0) + "," + yscale(data[0].soData) + ")")
+          .attr("dy", ".35em")
+          .attr("font-size", "10px")
+          .attr("text-anchor", "start")
+          .style("fill", "blue")
+          .text("SO/IP");
+      }
+    }
+
 
     // SO/IP line
     svg.append("path")
