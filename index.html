@@ -120,6 +120,7 @@
       </div>
     </div>
 
+    <!-- Views -->
     <div class="row">
       <div class="col-md-9" id="countVis">
       </div>
@@ -201,13 +202,15 @@
             " - " + $("#ageSlider").slider("values",1));
         }
 
+        // add pitching data to allData
         var formatPitchingData = function(error, _pitchingData) {
           if (!error) {
             for (d of allData) {
-              if (d["player"] in _pitchingData) {
-                d.pitching_data = _pitchingData[d["player"]]
+              for (p of _pitchingData) {
+                if (d["player"] == p["player"]) {
+                  d.pitching_data = p["stats"]
+                } 
               }
-              else d.pitching_data = []
             }
           }
         }
@@ -241,6 +244,7 @@
               return surgeryInstance;
             });
 
+            // load pitching data
             var loadPitchingData = function() {
               queue()
                 .defer(d3.json, "data/pitchingData.json")
@@ -248,8 +252,6 @@
             }
 
             loadPitchingData();
-
-            console.log(allData);
 
             initVis();
           }
