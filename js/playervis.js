@@ -12,19 +12,27 @@ PlayerVis = function(_parentElement, _data) {
   totalMonths = 0; 
   recoveryCount = 0;
   totalIP = 0; 
+  totalPA = 0; 
   ipCount = 0; 
+  paCount = 0; 
   for (surgery of this.data) {
     if (surgery.recovery) {
       recoveryCount+=1;
       totalMonths += surgery.recovery;
     }
     if (surgery.post_ippa) {
-      ipCount+=1; 
-      totalIP += surgery.post_ippa; 
+      if (surgery.position == "P") {
+        ipCount += 1;
+        totalIP += surgery.post_ippa; 
+      } else {
+        paCount += 1; 
+        totalPA += surgery.post_ippa; 
+      }
     }
   }
   this.averageRecovery = totalMonths / recoveryCount; 
   this.averageIP = totalIP / ipCount;
+  this.averagePA = totalPA / paCount; 
 
 	// TODO - change to show default stats upon loading
 	this.displayData = [this.data[5]];
@@ -246,9 +254,22 @@ PlayerVis.prototype.updateVis = function() {
       })
 
   // compare post IP to average 
-  var IPcats = ["Average Post TJS MLB IP", that.displayData[0].player];
-  var IPData = [this.averageIP, that.displayData[0].post_ippa];
-  var max = d3.max(IPData);
+  // var IPcats = ["Average Post TJS MLB IP", that.displayData[0].player];
+  // var IPData = [this.averageIP, that.displayData[0].post_ippa];
+  // var PAcats = ["Average Post TJS MLB PA", that.displayData[0].player];
+  // var PAData = [this.averagePA, that.displayData[0].post_ippa];
+
+
+  if (that.displayData[0].position == "P") {
+    var IPPAcats = ["Average Post TJS MLB IP", that.displayData[0].player];
+    var IPPAData = [this.averageIP, that.displayData[0].post_ippa];    
+    var max = d3.max(IPPAData);
+  } else {
+    var IPPAcats = ["Average Post TJS MLB PA", that.displayData[0].player];
+    var IPPAData = [this.averagePA, that.displayData[0].post_ippa];
+    var max = d3.max(IPPAData);
+  }
+
   this.x.domain([0, max*1.5]); 
  
   var ip_g = this.svg.append("g")
@@ -256,11 +277,12 @@ PlayerVis.prototype.updateVis = function() {
 
   var rows = ip_g
     .selectAll("g.row")
-    .data(IPData)
+    .data(IPPAData)
     .enter()
       .append("g")
       .attr("class", "row")
 
+  // actual values of IP/PA data 
   var names = rows
     .append("text")
     .attr("font-famiy", "sans-serif")
@@ -271,9 +293,10 @@ PlayerVis.prototype.updateVis = function() {
       return y + i*15; 
     })
     .text(function(d, i) {
-      return IPcats[i];
+      return IPPAcats[i];
     }); 
 
+  // IP/PA labels 
   var ip = rows
     .append("text")
     .attr("font-famiy", "sans-serif")
@@ -286,8 +309,7 @@ PlayerVis.prototype.updateVis = function() {
       return Math.round(d);
     }); 
 
-  // TODO: FIGURE OUT WHY POST_IPPA > 1000 AREN'T GETTING PROCESSED CORRECTLY 
-
+  // IP/PA bars 
   var bars = rows
     .append("rect")
     .attr("width", function(d) { return that.x(d); })
