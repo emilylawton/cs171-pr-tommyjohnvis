@@ -390,22 +390,22 @@ PlayerVis.prototype.updateVis = function() {
     }
     console.log(data);
 
-    // var x = d3.time.scale()
-    //   .range([0, this.width*.75]);
+    var h = 100;
 
     var xscale = d3.scale.linear()
       .range([0, this.width*.75])
 
     var yscale = d3.scale.linear()
-      .range([150, 0])
+      .range([h, 0])
 
     var xAxis = d3.svg.axis()
       .scale(xscale)
-      .orient("bottom");
+      .orient("bottom")
+      .tickFormat(d3.format("d"));
 
     var yAxis = d3.svg.axis()
       .scale(yscale)
-      .orient("left")
+      .orient("left");
 
     var line = d3.svg.line()
       .x(function(d) { return xscale(d.year); })
@@ -419,8 +419,14 @@ PlayerVis.prototype.updateVis = function() {
 
     svg.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + 150 + ")")
+      .attr("transform", "translate(0," + h + ")")
       .call(xAxis)
+      .selectAll("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0)
+        .attr("x", -35)
+        .attr("dy", ".35em")
+        .style("text-anchor", "start")
       .append("text")
         .attr("x", this.width*.75 / 2) 
         .attr("y", 27)
@@ -435,7 +441,7 @@ PlayerVis.prototype.updateVis = function() {
         .attr("y", 6)
         .attr("dy", ".71em")
         .attr("text-anchor", "end")
-        .text("Pitching Performance");
+        .text("ERA");
 
     svg.append("path")
       .datum(data)
