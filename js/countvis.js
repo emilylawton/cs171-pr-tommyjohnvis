@@ -141,7 +141,6 @@ CountVis.prototype.updateVis = function() {
     // create brush 
     this.brush = d3.svg.brush()
       .on("brush", function() {
-          console.log("brusheddd");
           $(that.eventHandler).trigger("brushChanged", {"start": that.brush.extent()[0], "end": that.brush.extent()[1]});
       });
 
