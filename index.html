@@ -28,6 +28,7 @@
   <script src="js/countvis.js"></script>
   <script src="js/playervis.js"></script>
   <script src="js/recoveryvis.js"></script>
+  <script src="js/agevis.js"></script>
 
 </head>
 
@@ -129,8 +130,14 @@
     </div>
 
     <div class="row">
-      <div class="col-md-9" id="recoveryVis">
+      <div class="col-md-3">
+        <h3>Distributions:</h3>
       </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-4" id="recoveryVis"></div>
+      <div class="col-md-4" id="ageVis"></div>
     </div>
 
     <script>
@@ -157,6 +164,7 @@
           countVis = new CountVis(d3.select("#countVis"), allData, MyEventHandler);
           playerVis = new PlayerVis(d3.select("#playerVis"), allData);
           recoveryVis = new RecoveryVis(d3.select("#recoveryVis"), allData);
+          ageVis = new AgeVis(d3.select("#ageVis"), allData);
 
           // bind event handler to vis objects
           $(MyEventHandler).bind("selectionChanged", function(event, surgery) {
@@ -165,6 +173,10 @@
 
           $(MyEventHandler).bind("brushChanged", function(event, extent) {
             recoveryVis.onBrushChange(extent["start"], extent["end"]);
+          });
+
+          $(MyEventHandler).bind("brushChanged", function(event, extent) {
+            ageVis.onBrushChange(extent["start"], extent["end"]);
           });
 
           // all player names 
@@ -269,25 +281,30 @@
           settings = displaySettings();
           countVis.userChange(settings);
           recoveryVis.userChange(settings);
+          ageVis.userChange(settings);
         });
 
         d3.selectAll("select[name=\"teamDropDown\"]").on("change", function() {
           settings = displaySettings();
           countVis.userChange(settings);
           recoveryVis.userChange(settings);
+          ageVis.userChange(settings);
         });
 
         d3.selectAll("select[name=\"positionDropDown\"]").on("change", function() {
           settings = displaySettings();
           countVis.userChange(settings);
           recoveryVis.userChange(settings);
+          ageVis.userChange(settings);
         });
 
         d3.selectAll("input[name=\"bz\"]").on("change", function() {
           settings = displaySettings();
           countVis.userChange(settings);
           recoveryVis.userChange(settings);
+          ageVis.userChange(settings);
         });
+
         // find player matches as user types in search box 
         function substringMatcher(strs) {
           return function findMatches(q, cb) {

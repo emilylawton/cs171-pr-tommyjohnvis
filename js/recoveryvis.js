@@ -12,7 +12,7 @@ RecoveryVis = function(_parentElement, _data) {
 	this.numberBins = this.maxRecovery - this.minRecovery + 1; 
 
 	// define svg constants 
-	this.margin = {top: 20, right: 0, bottom: 30, left: 30};
+	this.margin = {top: 20, right: 0, bottom: 30, left: 20};
 	this.width = 300 - this.margin.left - this.margin.right; 
 	this.height = 300 - this.margin.top - this.margin.bottom; 
 
@@ -32,10 +32,10 @@ RecoveryVis.prototype.initVis = function() {
 
   this.svg.append("text")
     .attr("x", this.width / 2 )
-    .attr("y", 20)
+    .attr("y", -5)
     .attr("class", "title")
     .style("text-anchor", "middle")
-    .text("Recovery Times");
+    .text("Recovery Time");
 
   // create axis and scales 
   this.x = d3.scale.linear()
@@ -175,13 +175,13 @@ RecoveryVis.prototype.filterAndAggregate = function(_filter) {
   // accumulate all values that fulfill the filter ceriterion 
   var filtered_data = that.data.filter(filter); 
 
-	// create an array of values for recovery times with domain [minRecovery, maxRecovery]
-	var res = d3.range(this.numberBins).map(function () {
+	// create an array of values for recovery times
+	var res = d3.range(this.maxRecovery).map(function () {
 		return 0;
 	});
 
 	for (surgery of filtered_data) {
-		res[surgery.recovery - this.minRecovery]+=1; 
+		res[surgery.recovery]+=1; 
 	}
 
   return res; 
@@ -239,7 +239,7 @@ RecoveryVis.prototype.filterPosition = function(position) {
     });
   }
   else if (position == "POSITION") {
-    this.graph.nodes = this.graph.nodes.filter(function(d) {
+    this.data = this.data.filter(function(d) {
       return d.position != "P";
     });
   }
