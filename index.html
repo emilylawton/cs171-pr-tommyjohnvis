@@ -35,6 +35,7 @@
   <div class="container">
     <h1>Tommy John Vis</h1>
 
+    <!-- Viewing Options -->
     <div class="row">
       <div class="col-md-7" id="viewingArea">
         <div class="row">
@@ -245,19 +246,27 @@
 
         // when the grouping is changed
         d3.selectAll("input[name=\"grouping\"]").on("change", function() {
-          countVis.userChange(displaySettings());
+          settings = displaySettings();
+          countVis.userChange(settings);
+          recoveryVis.userChange(settings);
         });
 
         d3.selectAll("select[name=\"teamDropDown\"]").on("change", function() {
-          countVis.userChange(displaySettings());
+          settings = displaySettings();
+          countVis.userChange(settings);
+          recoveryVis.userChange(settings);
         });
 
         d3.selectAll("select[name=\"positionDropDown\"]").on("change", function() {
-          countVis.userChange(displaySettings());
+          settings = displaySettings();
+          countVis.userChange(settings);
+          recoveryVis.userChange(settings);
         });
 
         d3.selectAll("input[name=\"bz\"]").on("change", function() {
-          countVis.userChange(displaySettings());
+          settings = displaySettings();
+          countVis.userChange(settings);
+          recoveryVis.userChange(settings);
         });
         // find player matches as user types in search box 
         function substringMatcher(strs) {

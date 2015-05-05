@@ -133,6 +133,42 @@ CountVis.prototype.updateVis = function() {
   // update player count
   this.playerCount.text("Total Players: " + this.graph.nodes.length);
 
+  // set brush or zoom
+  if (this.bz == "brushing") {
+    // deactivate zoomer
+    this.zoomer.on('zoom', null);
+
+    // create brush 
+    this.brush = d3.svg.brush()
+      .on("brush", function() {
+          console.log("brusheddd");
+          $(that.eventHandler).trigger("brushChanged", {"start": that.brush.extent()[0], "end": that.brush.extent()[1]});
+      });
+
+    // add brush
+    this.svg.append("g")
+      .attr("class", "brush");
+
+    this.brush.x(this.x);
+    this.svg.select(".brush")
+      .call(this.brush)
+      .selectAll("rect")
+      .attr("height", this.height);
+  }
+  else {
+    // activate zoomer
+    this.zoomer.on('zoom', this.zoom);
+
+    // deactivate brush
+    this.brush
+      .on('brush', null)
+      .on('brushstart', null)
+      .on('brushend', null);
+
+    // remove brush element
+    d3.select('.brush').remove();
+  }
+
   // join
   this.node = this.svg.selectAll(".node")
     .data(this.graph.nodes)
@@ -195,41 +231,6 @@ CountVis.prototype.updateVis = function() {
       d.y = that.y(that.occurences[d.surg_date]);
       that.occurences[d.surg_date]--;
     });
-
-  if (this.bz == "brushing") {
-    // deactivate zoomer
-    this.zoomer.on('zoom', null);
-
-    // create brush 
-    this.brush = d3.svg.brush()
-      .on("brush", function() {
-          console.log("brusheddd");
-          $(that.eventHandler).trigger("brushChanged", {"start": that.brush.extent()[0], "end": that.brush.extent()[1]});
-      });
-
-    // add brush
-    this.svg.append("g")
-      .attr("class", "brush");
-
-    this.brush.x(this.x);
-    this.svg.select(".brush")
-      .call(this.brush)
-      .selectAll("rect")
-      .attr("height", this.height);
-  }
-  else {
-    // activate zoomer
-    this.zoomer.on('zoom', this.zoom);
-
-    // deactivate brush
-    this.brush
-      .on('brush', null)
-      .on('brushstart', null)
-      .on('brushend', null);
-
-    // remove brush element
-    d3.select('.brush').remove();
-  }
 
   this.graphUpdate(200);
 
