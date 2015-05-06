@@ -1,5 +1,9 @@
 # Tommy John Surgery Visualization README
 
+Matt Timoney | Sean O'Neill | Emily Lawton
+
+-
+
 http://emilylawton.github.io/cs171-pr-tommyjohnvis/ 
 
 ### Video
