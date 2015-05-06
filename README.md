@@ -14,8 +14,7 @@ https://www.youtube.com/watch?v=U1WK4j9xb1E&feature=youtu.be
 ### Process Book
 
 -
-https://docs.google.com/a/college.harvard.edu/document/d/1laUyLCyJN1hDHp0qPEPCX5Q9Z4apPwG25a23SmULjXk/edit?usp=sharing
-
+http://emilylawton.github.io/cs171-pr-tommyjohnvis/TommyJohnVisProcessBook.pdf
 
 ### Code Structure and Overview of Functionality
 
