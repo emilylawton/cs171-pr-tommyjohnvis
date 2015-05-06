@@ -10,7 +10,7 @@ https://www.youtube.com/watch?v=U1WK4j9xb1E&feature=youtu.be
 ### Process Book
 
 -
-TODO: url here
+https://docs.google.com/a/college.harvard.edu/document/d/1laUyLCyJN1hDHp0qPEPCX5Q9Z4apPwG25a23SmULjXk/edit?usp=sharing
 
 
 ### Code Structure and Overview of Functionality
