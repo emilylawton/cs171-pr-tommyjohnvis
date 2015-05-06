@@ -5,7 +5,7 @@ http://emilylawton.github.io/cs171-pr-tommyjohnvis/
 ### Video
 
 -
-TODO: url here
+https://www.youtube.com/watch?v=U1WK4j9xb1E&feature=youtu.be
 
 ### Process Book
 
